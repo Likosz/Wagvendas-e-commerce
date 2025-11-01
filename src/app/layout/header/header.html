@@ -1,0 +1,332 @@
+<header
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+  [class.scrolled]="isScrolled()"
+  role="banner"
+>
+  <!-- Top Bar - Anúncios e links úteis -->
+  <div class="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-2 hidden lg:block">
+    <div class="container-custom">
+      <div class="flex items-center justify-between text-sm">
+        <p class="flex items-center gap-2">
+          <span class="animate-pulse">🔥</span>
+          <span>Frete grátis em compras acima de R$ 199</span>
+        </p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="hover:underline transition-all">Central de Ajuda</a>
+          <a href="#" class="hover:underline transition-all">Rastrear Pedido</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Header -->
+  <div
+    class="bg-white dark:bg-dark-900 border-b border-dark-100 dark:border-dark-800 transition-all duration-300"
+    [class.shadow-lg]="isScrolled()"
+  >
+    <div class="container-custom">
+      <div class="flex items-center justify-between h-20 gap-4">
+        <!-- Logo -->
+        <div class="flex items-center gap-8">
+          <a
+            routerLink="/"
+            class="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded-lg px-2 py-1"
+            aria-label="WagSales - Página inicial"
+          >
+            <div class="relative">
+              <div
+                class="w-10 h-10 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300 shadow-md"
+              >
+                <span class="text-white font-bold text-xl">W</span>
+              </div>
+              <div
+                class="absolute -top-1 -right-1 w-3 h-3 bg-accent-500 rounded-full animate-pulse"
+              ></div>
+            </div>
+            <div class="hidden md:block">
+              <h1 class="text-2xl font-bold gradient-text tracking-tight">WagSales</h1>
+              <p class="text-xs text-dark-500 dark:text-dark-400 -mt-1">E-commerce Moderno</p>
+            </div>
+          </a>
+
+          <!-- Desktop Navigation -->
+          <nav
+            class="hidden lg:flex items-center gap-1"
+            role="navigation"
+            aria-label="Navegação principal"
+          >
+            @for (link of navLinks; track link.path) {
+              <a
+                [routerLink]="link.path"
+                [routerLinkActive]="'active'"
+                [routerLinkActiveOptions]="{ exact: !!link.exact }"
+                class="nav-link relative px-4 py-2 rounded-lg text-dark-700 dark:text-dark-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-dark-50 dark:hover:bg-dark-800 transition-all duration-200 font-medium"
+                [attr.aria-label]="link.label"
+              >
+                {{ link.label }}
+                @if (link.badge) {
+                  <span
+                    class="absolute -top-1 -right-1 px-2 py-0.5 bg-accent-500 text-white text-xs font-semibold rounded-full animate-bounce-slow"
+                  >
+                    {{ link.badge }}
+                  </span>
+                }
+              </a>
+            }
+          </nav>
+        </div>
+
+        <!-- Search Bar - Desktop -->
+        <div class="hidden lg:block flex-1 max-w-xl">
+          <form class="relative" role="search" (submit)="$event.preventDefault(); onSearch($event)">
+            <label for="desktop-search" class="sr-only">Buscar produtos</label>
+            <input
+              id="desktop-search"
+              type="search"
+              placeholder="Buscar produtos, marcas..."
+              class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-dark-200 dark:border-dark-700 focus:border-primary-500 dark:focus:border-primary-500 bg-dark-50 dark:bg-dark-800 text-dark-900 dark:text-dark-50 placeholder:text-dark-400 transition-all duration-200"
+              (keyup.enter)="onSearch($event)"
+              aria-label="Campo de busca"
+            />
+            <lucide-icon
+              [img]="icons.Search"
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-dark-400 dark:text-dark-500 w-5 h-5"
+              aria-hidden="true"
+            >
+            </lucide-icon>
+          </form>
+        </div>
+
+        <!-- Actions - Desktop & Mobile -->
+        <div class="flex items-center gap-2 md:gap-3">
+          <!-- Search Icon - Mobile Only -->
+          <button
+            type="button"
+            class="lg:hidden btn-ghost p-2.5 rounded-lg"
+            (click)="toggleSearch()"
+            [attr.aria-label]="searchOpen() ? 'Fechar busca' : 'Abrir busca'"
+            aria-controls="mobile-search"
+          >
+            <lucide-icon [img]="icons.Search" class="w-5 h-5" aria-hidden="true"></lucide-icon>
+          </button>
+
+          <!-- Dark Mode Toggle -->
+          <button
+            type="button"
+            class="btn-ghost p-2.5 rounded-lg relative group"
+            (click)="toggleDarkMode()"
+            [attr.aria-label]="
+              themeService.isDarkMode() ? 'Ativar modo claro' : 'Ativar modo escuro'
+            "
+            aria-live="polite"
+          >
+            @if (themeService.isDarkMode()) {
+              <lucide-icon
+                [img]="icons.Sun"
+                class="w-5 h-5 text-accent-500 transform group-hover:rotate-180 transition-transform duration-500"
+                aria-hidden="true"
+              >
+              </lucide-icon>
+            } @else {
+              <lucide-icon
+                [img]="icons.Moon"
+                class="w-5 h-5 text-primary-600 transform group-hover:-rotate-12 transition-transform duration-300"
+                aria-hidden="true"
+              >
+              </lucide-icon>
+            }
+            <span class="sr-only">{{
+              themeService.isDarkMode() ? 'Modo claro' : 'Modo escuro'
+            }}</span>
+          </button>
+
+          <!-- Wishlist -->
+          <button
+            type="button"
+            class="hidden md:flex btn-ghost p-2.5 rounded-lg relative group"
+            aria-label="Minha lista de desejos"
+          >
+            <lucide-icon
+              [img]="icons.Heart"
+              class="w-5 h-5 group-hover:text-error-500 group-hover:fill-error-500 transition-all duration-200"
+              aria-hidden="true"
+            >
+            </lucide-icon>
+            <span class="absolute -top-1 -right-1 w-2 h-2 bg-error-500 rounded-full"></span>
+          </button>
+
+          <!-- Cart -->
+          <button
+            type="button"
+            class="btn-ghost p-2.5 rounded-lg relative group"
+            routerLink="/carrinho"
+            aria-label="Carrinho de compras - {{ cartItemCount() }} {{
+              cartItemCount() === 1 ? 'item' : 'itens'
+            }}"
+          >
+            <lucide-icon
+              [img]="icons.ShoppingCart"
+              class="w-5 h-5 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+              aria-hidden="true"
+            >
+            </lucide-icon>
+            @if (hasCartItems()) {
+              <span
+                class="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center bg-primary-600 text-white text-xs font-bold rounded-full animate-scale-in"
+                aria-label="{{ cartItemCount() }} itens no carrinho"
+              >
+                {{ cartItemCount() }}
+              </span>
+            }
+          </button>
+
+          <!-- User Account -->
+          <button
+            type="button"
+            class="hidden md:flex btn-ghost p-2.5 rounded-lg"
+            routerLink="/perfil"
+            aria-label="Minha conta"
+          >
+            <lucide-icon [img]="icons.User" class="w-5 h-5" aria-hidden="true"></lucide-icon>
+          </button>
+
+          <!-- Mobile Menu Toggle -->
+          <button
+            type="button"
+            class="lg:hidden btn-ghost p-2.5 rounded-lg"
+            (click)="toggleMobileMenu()"
+            [attr.aria-label]="mobileMenuOpen() ? 'Fechar menu' : 'Abrir menu'"
+            aria-expanded="{{ mobileMenuOpen() }}"
+            aria-controls="mobile-menu"
+          >
+            @if (mobileMenuOpen()) {
+              <lucide-icon [img]="icons.X" class="w-6 h-6" aria-hidden="true"></lucide-icon>
+            } @else {
+              <lucide-icon [img]="icons.Menu" class="w-6 h-6" aria-hidden="true"></lucide-icon>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Search Bar -->
+  @if (searchOpen()) {
+    <div
+      id="mobile-search"
+      class="lg:hidden bg-white dark:bg-dark-900 border-b border-dark-200 dark:border-dark-700 animate-slide-down"
+      role="search"
+    >
+      <div class="container-custom py-4">
+        <form class="relative" (submit)="$event.preventDefault(); onSearch($event)">
+          <label for="mobile-search-input" class="sr-only">Buscar produtos</label>
+          <input
+            id="mobile-search-input"
+            type="search"
+            placeholder="Buscar produtos..."
+            class="w-full pl-12 pr-4 py-3 rounded-xl border-2 border-dark-200 dark:border-dark-700 focus:border-primary-500 bg-dark-50 dark:bg-dark-800"
+            (keyup.enter)="onSearch($event)"
+            autofocus
+          />
+          <lucide-icon
+            [img]="icons.Search"
+            class="absolute left-4 top-1/2 -translate-y-1/2 text-dark-400 w-5 h-5"
+            aria-hidden="true"
+          >
+          </lucide-icon>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Mobile Menu Overlay -->
+  @if (mobileMenuOpen()) {
+    <div
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden animate-fade-in"
+      (click)="closeMobileMenu()"
+      aria-hidden="true"
+    ></div>
+  }
+
+  <!-- Mobile Menu Sidebar -->
+  @if (mobileMenuOpen()) {
+    <nav
+      id="mobile-menu"
+      class="fixed top-0 right-0 bottom-0 w-80 max-w-[85vw] bg-white dark:bg-dark-900 z-50 lg:hidden shadow-2xl animate-slide-in-right overflow-y-auto"
+      role="navigation"
+      aria-label="Menu mobile"
+      (click)="onMenuClick($event)"
+    >
+      <!-- Mobile Menu Header -->
+      <div
+        class="flex items-center justify-between p-6 border-b border-dark-200 dark:border-dark-700"
+      >
+        <div>
+          <h2 class="text-xl font-bold text-dark-900 dark:text-dark-50">Menu</h2>
+          <p class="text-sm text-dark-500 dark:text-dark-400">Navegue pelo site</p>
+        </div>
+        <button
+          type="button"
+          class="p-2 hover:bg-dark-100 dark:hover:bg-dark-800 rounded-lg transition-colors"
+          (click)="closeMobileMenu()"
+          aria-label="Fechar menu"
+        >
+          <lucide-icon [img]="icons.X" class="w-6 h-6" aria-hidden="true"></lucide-icon>
+        </button>
+      </div>
+
+      <!-- Mobile Navigation Links -->
+      <div class="p-6 space-y-2">
+        @for (link of navLinks; track link.path) {
+          <a
+            [routerLink]="link.path"
+            (click)="closeMobileMenu()"
+            class="flex items-center justify-between p-4 rounded-xl hover:bg-dark-100 dark:hover:bg-dark-800 text-dark-900 dark:text-dark-50 font-medium transition-colors group"
+          >
+            <span>{{ link.label }}</span>
+            @if (link.badge) {
+              <span class="px-2 py-1 bg-accent-500 text-white text-xs font-semibold rounded-full">
+                {{ link.badge }}
+              </span>
+            }
+          </a>
+        }
+      </div>
+
+      <div class="border-t border-dark-200 dark:border-dark-700"></div>
+
+      <!-- Mobile Quick Links -->
+      <div class="p-6 space-y-2">
+        <h3 class="text-sm font-semibold text-dark-500 dark:text-dark-400 mb-3">Minha Conta</h3>
+
+        <a
+          routerLink="/perfil"
+          (click)="closeMobileMenu()"
+          class="flex items-center gap-3 p-3 rounded-lg hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
+        >
+          <lucide-icon
+            [img]="icons.User"
+            class="w-5 h-5 text-dark-500"
+            aria-hidden="true"
+          ></lucide-icon>
+          <span class="text-dark-900 dark:text-dark-50">Meu Perfil</span>
+        </a>
+
+        <a
+          routerLink="/favoritos"
+          (click)="closeMobileMenu()"
+          class="flex items-center gap-3 p-3 rounded-lg hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors"
+        >
+          <lucide-icon
+            [img]="icons.Heart"
+            class="w-5 h-5 text-dark-500"
+            aria-hidden="true"
+          ></lucide-icon>
+          <span class="text-dark-900 dark:text-dark-50">Favoritos</span>
+        </a>
+      </div>
+    </nav>
+  }
+</header>
+
+<div class="h-20 lg:h-[7.5rem]" aria-hidden="true"></div>
