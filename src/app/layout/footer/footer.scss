@@ -1,0 +1,110 @@
+// Animacaoo para o gradiente da newsletter
+.bg-gradient-to-r {
+  background-size: 200% 100%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+// Hover effect nos links do footer
+footer a {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+// Social icons com efeito de brilho
+.social-icon-glow {
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 0 20px currentColor;
+  }
+}
+
+// Newsletter input focus effect
+input[type='email'] {
+  &:focus {
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3);
+  }
+}
+
+// Skeleton loading para quando dados estiverem carregando
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(to right, #1e293b 4%, #334155 25%, #1e293b 36%);
+  background-size: 1000px 100%;
+}
+
+// Payment methods hover
+.payment-method {
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+// Responsividade para o footer
+@media (max-width: 768px) {
+  footer {
+    .container-custom {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    // Centraliza tudo em mobile
+    nav ul {
+      text-align: center;
+    }
+  }
+}
+
+// Print styles
+@media print {
+  footer {
+    .bg-gradient-to-r,
+    .bg-dark-900,
+    .bg-dark-800 {
+      background: white !important;
+      color: black !important;
+    }
+
+    // Esconde redes sociais e newsletter
+    .social-links,
+    form {
+      display: none !important;
+    }
+  }
+}

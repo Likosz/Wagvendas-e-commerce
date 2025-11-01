@@ -1,1 +1,343 @@
-/* You can add global styles to this file, and also import other style files */
+/* ========================================
+   WAGSALES - GLOBAL STYLES
+   E-commerce moderno com Angular + TailwindCSS
+   ======================================== */
+
+/* Angular Material Theme Configuration */
+@use '@angular/material' as mat;
+
+/* Tailwind Base Imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Configuração do tema Material personalizado */
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Inter,
+    density: 0,
+  ));
+}
+
+/* ========================================
+   IMPORTAÇÃO DE FONTES
+   ======================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* ========================================
+   VARIÁVEIS CSS CUSTOMIZADAS
+   ======================================== */
+:root {
+  /* Cores principais */
+  --color-primary: #0ea5e9;
+  --color-primary-dark: #0284c7;
+  --color-secondary: #d946ef;
+  --color-accent: #f97316;
+
+  /* Background & Surfaces */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+
+  /* Text Colors */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+
+  /* Borders */
+  --border-color: #e2e8f0;
+  --border-radius-base: 0.5rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+  /* Transitions */
+  --transition-base: all 0.2s ease-in-out;
+  --transition-slow: all 0.3s ease-in-out;
+}
+
+/* Dark Mode Variables */
+.dark {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-tertiary: #94a3b8;
+
+  --border-color: #334155;
+}
+
+/* ========================================
+   RESET & BASE STYLES
+   ======================================== */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    @apply scroll-smooth;
+    height: 100%;
+  }
+
+  body {
+    @apply bg-white dark:bg-dark-900 text-dark-900 dark:text-dark-50;
+    @apply font-sans antialiased;
+    @apply transition-colors duration-300;
+    height: 100%;
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  }
+
+  /* Typography */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold leading-tight;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h4 {
+    @apply text-xl md:text-2xl;
+  }
+
+  h5 {
+    @apply text-lg md:text-xl;
+  }
+
+  h6 {
+    @apply text-base md:text-lg;
+  }
+
+  p {
+    @apply text-base leading-relaxed;
+  }
+
+  a {
+    @apply text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300;
+    @apply transition-colors duration-200;
+  }
+
+  /* Form Elements */
+  input, textarea, select {
+    @apply w-full px-4 py-2.5 rounded-lg;
+    @apply bg-white dark:bg-dark-800;
+    @apply border border-dark-200 dark:border-dark-700;
+    @apply text-dark-900 dark:text-dark-50;
+    @apply placeholder:text-dark-400 dark:placeholder:text-dark-500;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply transition-all duration-200;
+  }
+
+  button {
+    @apply font-medium rounded-lg;
+    @apply transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+}
+
+/* ========================================
+   COMPONENTES REUTILIZÁVEIS
+   ======================================== */
+@layer components {
+  /* Botões */
+  .btn {
+    @apply px-6 py-2.5 rounded-lg font-medium;
+    @apply transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white;
+    @apply focus:ring-primary-500;
+    @apply shadow-md hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary-600 hover:bg-secondary-700 text-white;
+    @apply focus:ring-secondary-500;
+  }
+
+  .btn-outline {
+    @apply border-2 border-primary-600 text-primary-600;
+    @apply hover:bg-primary-600 hover:text-white;
+    @apply focus:ring-primary-500;
+  }
+
+  .btn-ghost {
+    @apply text-dark-700 dark:text-dark-300;
+    @apply hover:bg-dark-100 dark:hover:bg-dark-800;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white dark:bg-dark-800;
+    @apply rounded-xl shadow-soft;
+    @apply border border-dark-100 dark:border-dark-700;
+    @apply p-6;
+    @apply transition-all duration-200;
+  }
+
+  .card-hover {
+    @apply hover:shadow-hard hover:-translate-y-1;
+  }
+
+  /* Container */
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .badge-primary {
+    @apply bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200;
+  }
+
+  .badge-success {
+    @apply bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-200;
+  }
+
+  .badge-error {
+    @apply bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-200;
+  }
+
+  /* Loading Skeleton */
+  .skeleton {
+    @apply animate-pulse bg-dark-200 dark:bg-dark-700 rounded;
+  }
+
+  /* Divider */
+  .divider {
+    @apply border-t border-dark-200 dark:border-dark-700;
+  }
+}
+
+/* ========================================
+   UTILITIES CUSTOMIZADAS
+   ======================================== */
+@layer utilities {
+  /* Glassmorphism */
+  .glass {
+    @apply backdrop-blur-md bg-white/80 dark:bg-dark-900/80;
+    @apply border border-dark-200/50 dark:border-dark-700/50;
+  }
+
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent;
+  }
+
+  /* Scroll Customizado */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(148 163 184) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-dark-300 dark:bg-dark-600 rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-dark-400 dark:bg-dark-500;
+  }
+
+  /* Hide Scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ========================================
+   ANIMAÇÕES CUSTOMIZADAS
+   ======================================== */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(to right, #f1f5f9 4%, #e2e8f0 25%, #f1f5f9 36%);
+  background-size: 1000px 100%;
+}
+
+/* ========================================
+   RESPONSIVE UTILITIES
+   ======================================== */
+@media (max-width: 640px) {
+  .container-custom {
+    @apply px-4;
+  }
+}
+
+/* ========================================
+   ACESSIBILIDADE
+   ======================================== */
+/* Focus visible para keyboard navigation */
+.focus-visible:focus {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+}
+
+/* Reduzir movimento para usuários com preferência */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+@media print {
+  body {
+    @apply bg-white text-black;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
