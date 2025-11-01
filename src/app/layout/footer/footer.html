@@ -1,0 +1,297 @@
+<footer class="bg-dark-900 text-dark-50 mt-auto" role="contentinfo">
+  <!-- Newsletter Section -->
+  <div class="bg-gradient-to-r from-primary-600 to-secondary-600 py-12">
+    <div class="container-custom">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <!-- Newsletter Info -->
+        <div class="text-center lg:text-left">
+          <h2 class="text-3xl font-bold text-white mb-2">Fique por dentro!</h2>
+          <p class="text-white/90 text-lg">
+            Receba ofertas exclusivas, lançamentos e novidades em primeira mão
+          </p>
+        </div>
+
+        <!-- Newsletter Form -->
+        <form (ngSubmit)="submitNewsletter()" class="flex flex-col gap-3">
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex-1">
+              <label for="newsletter-email" class="sr-only">Seu melhor email</label>
+              <div class="relative">
+                <input
+                  id="newsletter-email"
+                  type="email"
+                  [formControl]="newsletterEmail"
+                  placeholder="seu@email.com"
+                  class="w-full pl-12 pr-4 py-4 rounded-xl bg-white text-dark-900 placeholder:text-dark-400 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all"
+                  [class.border-2]="newsletterEmail.invalid && newsletterEmail.touched"
+                  [class.border-error-500]="newsletterEmail.invalid && newsletterEmail.touched"
+                  aria-label="Email para newsletter"
+                  [attr.aria-invalid]="newsletterEmail.invalid && newsletterEmail.touched"
+                />
+                <lucide-icon
+                  [img]="icons.Mail"
+                  class="absolute left-4 top-1/2 -translate-y-1/2 text-dark-400 w-5 h-5"
+                  aria-hidden="true"
+                >
+                </lucide-icon>
+              </div>
+
+              <!-- Error Message -->
+              @if (newsletterEmail.invalid && newsletterEmail.touched) {
+                <p
+                  class="mt-2 text-sm text-white bg-error-500/20 px-3 py-1 rounded-lg inline-block"
+                >
+                  {{ getEmailError() }}
+                </p>
+              }
+            </div>
+
+            <button
+              type="submit"
+              class="px-8 py-4 bg-white text-primary-600 font-semibold rounded-xl hover:bg-dark-50 hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              [disabled]="newsletterStatus() === 'loading'"
+              aria-label="Assinar newsletter"
+            >
+              @if (newsletterStatus() === 'loading') {
+                <span class="animate-spin">⏳</span>
+                <span>Enviando...</span>
+              } @else {
+                <lucide-icon [img]="icons.Send" class="w-5 h-5" aria-hidden="true"></lucide-icon>
+                <span>Assinar</span>
+              }
+            </button>
+          </div>
+
+          <!-- Success Message -->
+          @if (newsletterMessage()) {
+            <p
+              class="text-center text-white font-medium animate-fade-in bg-white/10 px-4 py-2 rounded-lg"
+            >
+              {{ newsletterMessage() }}
+            </p>
+          }
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Footer Content -->
+  <div class="bg-dark-800 py-16">
+    <div class="container-custom">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
+        <!-- Brand Column -->
+        <div class="lg:col-span-1">
+          <a routerLink="/" class="inline-flex items-center gap-2 mb-6 group">
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform"
+            >
+              <span class="text-white font-bold text-2xl">W</span>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold gradient-text">WagSales</h3>
+              <p class="text-xs text-dark-400">E-commerce Moderno</p>
+            </div>
+          </a>
+
+          <p class="text-dark-300 text-sm mb-6 leading-relaxed">
+            Sua loja online de confiança com os melhores produtos e o melhor atendimento.
+          </p>
+
+          <!-- Contact Info -->
+          <div class="space-y-3">
+            <a
+              href="tel:+551140004000"
+              class="flex items-center gap-3 text-dark-300 hover:text-primary-400 transition-colors group"
+            >
+              <lucide-icon
+                [img]="icons.Phone"
+                class="w-5 h-5 group-hover:scale-110 transition-transform"
+                aria-hidden="true"
+              ></lucide-icon>
+              <span class="text-sm">(11) 4000-4000</span>
+            </a>
+            <a
+              href="mailto:contato@wagsales.com"
+              class="flex items-center gap-3 text-dark-300 hover:text-primary-400 transition-colors group"
+            >
+              <lucide-icon
+                [img]="icons.Mail"
+                class="w-5 h-5 group-hover:scale-110 transition-transform"
+                aria-hidden="true"
+              ></lucide-icon>
+              <span class="text-sm">contato&#64;wagsales.com</span>
+            </a>
+            <div class="flex items-start gap-3 text-dark-300">
+              <lucide-icon
+                [img]="icons.MapPin"
+                class="w-5 h-5 mt-0.5 flex-shrink-0"
+                aria-hidden="true"
+              ></lucide-icon>
+              <span class="text-sm">São Paulo, SP<br />Brasil</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Links Columns -->
+        <div>
+          <h4 class="font-semibold text-white mb-4 text-lg">Institucional</h4>
+          <nav aria-label="Links institucionais">
+            <ul class="space-y-3">
+              @for (link of footerLinks.institucional; track link.path) {
+                <li>
+                  <a
+                    [routerLink]="link.path"
+                    class="text-dark-300 hover:text-primary-400 transition-colors text-sm block hover:translate-x-1 transform duration-200"
+                  >
+                    {{ link.label }}
+                  </a>
+                </li>
+              }
+            </ul>
+          </nav>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-4 text-lg">Ajuda</h4>
+          <nav aria-label="Links de ajuda">
+            <ul class="space-y-3">
+              @for (link of footerLinks.ajuda; track link.path) {
+                <li>
+                  <a
+                    [routerLink]="link.path"
+                    class="text-dark-300 hover:text-primary-400 transition-colors text-sm block hover:translate-x-1 transform duration-200"
+                  >
+                    {{ link.label }}
+                  </a>
+                </li>
+              }
+            </ul>
+          </nav>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-4 text-lg">Compras</h4>
+          <nav aria-label="Links de compras">
+            <ul class="space-y-3">
+              @for (link of footerLinks.compras; track link.path) {
+                <li>
+                  <a
+                    [routerLink]="link.path"
+                    class="text-dark-300 hover:text-primary-400 transition-colors text-sm block hover:translate-x-1 transform duration-200"
+                  >
+                    {{ link.label }}
+                  </a>
+                </li>
+              }
+            </ul>
+          </nav>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-white mb-4 text-lg">Legal</h4>
+          <nav aria-label="Links legais">
+            <ul class="space-y-3">
+              @for (link of footerLinks.legal; track link.path) {
+                <li>
+                  <a
+                    [routerLink]="link.path"
+                    class="text-dark-300 hover:text-primary-400 transition-colors text-sm block hover:translate-x-1 transform duration-200"
+                  >
+                    {{ link.label }}
+                  </a>
+                </li>
+              }
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social & Payment Section -->
+  <div class="bg-dark-900 py-8 border-t border-dark-700">
+    <div class="container-custom">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-center">
+        <!-- Social Media -->
+        <div>
+          <h4 class="font-semibold text-white mb-4 text-sm">Redes Sociais</h4>
+          <div class="flex items-center gap-3">
+            @for (social of socialLinks; track social.name) {
+              <a
+                [href]="social.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-10 h-10 rounded-full bg-dark-800 flex items-center justify-center text-dark-300 transition-all duration-200 {{
+                  social.color
+                }} hover:scale-110 hover:shadow-lg"
+                [attr.aria-label]="social.name"
+              >
+                <lucide-icon [img]="social.icon" class="w-5 h-5" aria-hidden="true"></lucide-icon>
+              </a>
+            }
+          </div>
+        </div>
+
+        <!-- Payment Methods -->
+        <div class="text-center">
+          <h4 class="font-semibold text-white mb-4 text-sm">Pagamento</h4>
+          <div class="flex items-center justify-center gap-3 flex-wrap">
+            @for (method of paymentMethods; track method.name) {
+              <div class="px-3 py-2 bg-dark-800 rounded-lg text-2xl" [attr.title]="method.name">
+                {{ method.logo }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Security Seals -->
+        <div class="text-center lg:text-right">
+          <h4 class="font-semibold text-white mb-4 text-sm">Segurança</h4>
+          <div class="flex items-center justify-center lg:justify-end gap-4">
+            <div class="flex items-center gap-2 px-3 py-2 bg-dark-800 rounded-lg">
+              <lucide-icon
+                [img]="icons.Shield"
+                class="w-5 h-5 text-success-500"
+                aria-hidden="true"
+              ></lucide-icon>
+              <span class="text-xs text-dark-300">Site Seguro</span>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-2 bg-dark-800 rounded-lg">
+              <lucide-icon
+                [img]="icons.Truck"
+                class="w-5 h-5 text-primary-500"
+                aria-hidden="true"
+              ></lucide-icon>
+              <span class="text-xs text-dark-300">Frete Rápido</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="bg-dark-950 py-6 border-t border-dark-800">
+    <div class="container-custom">
+      <div
+        class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-dark-400"
+      >
+        <p class="text-center md:text-left">
+          © {{ currentYear }} <span class="text-primary-400 font-semibold">WagSales</span>. Todos
+          os direitos reservados.
+        </p>
+
+        <p class="text-center md:text-right text-xs">
+          Desenvolvido com ❤️ usando
+          <a
+            href="https://angular.dev"
+            target="_blank"
+            rel="noopener"
+            class="text-primary-400 hover:text-primary-300 transition-colors"
+            >Angular</a
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
