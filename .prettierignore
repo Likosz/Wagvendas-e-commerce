@@ -1,0 +1,14 @@
+# Build outputs
+dist/
+.angular/
+node_modules/
+coverage/
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE
+.vscode/
+.idea/
