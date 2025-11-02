@@ -1,15 +1,12 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-// Components
 import { Hero } from './components/hero/hero';
 import { CategoriesCarousel } from './components/categories-carousel/categories-carousel';
 import { ProductGrid } from '../../shared/components/product-grid/product-grid';
 import { ProductFilters } from '../../shared/components/product-filters/product-filters';
 import { QuickViewModal } from '../../shared/components/quick-view-modal/quick-view-modal';
-
-// Services
 import { ProductService } from '../../core/services/product.service';
+import { CartService } from '../../core/services/cart.service';
 import { Product, ProductFilter, ProductSortOption } from '../../core/interfaces/product.interface';
 
 @Component({
@@ -18,14 +15,15 @@ import { Product, ProductFilter, ProductSortOption } from '../../core/interfaces
   imports: [CommonModule, Hero, CategoriesCarousel, ProductGrid, ProductFilters, QuickViewModal],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePage implements OnInit {
   private productService = inject(ProductService);
+  private cartService = inject(CartService);
 
   public isFiltersOpen = signal<boolean>(false);
   public isLoading = signal<boolean>(false);
 
-  // Quick View Modal
   public quickViewProduct = signal<Product | null>(null);
   public isQuickViewOpen = signal<boolean>(false);
 
@@ -53,32 +51,24 @@ export class HomePage implements OnInit {
   onFilterChange(filter: ProductFilter): void {
     this.isLoading.set(true);
     this.productService.filterProducts(filter);
-    setTimeout(() => {
-      this.isLoading.set(false);
-    }, 300);
+    this.isLoading.set(false);
   }
 
-  // Sort handler
   onSortChange(sortOption: ProductSortOption): void {
     this.isLoading.set(true);
     this.productService.sortProducts(sortOption);
-    setTimeout(() => {
-      this.isLoading.set(false);
-    }, 300);
+    this.isLoading.set(false);
   }
 
   // Pagination
   onPageChange(page: number): void {
     this.isLoading.set(true);
     this.productService.setPage(page);
-    setTimeout(() => {
-      this.isLoading.set(false);
-    }, 300);
+    this.isLoading.set(false);
   }
 
   onAddToCart(product: Product): void {
-    console.log('Add to cart:', product);
-    // TODO: Implement cart service
+    this.cartService.add(product, 1);
   }
 
   onToggleWishlist(product: Product): void {
@@ -100,8 +90,8 @@ export class HomePage implements OnInit {
   }
 
   onQuickViewAddToCart(data: { product: Product; quantity: number }): void {
-    console.log('Add to cart from quick view:', data);
-    // TODO: Implementar serviço de carrinho
+    this.cartService.add(data.product, data.quantity);
+    this.closeQuickView();
   }
 
   // Mobile filters

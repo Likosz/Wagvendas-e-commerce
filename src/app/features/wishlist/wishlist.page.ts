@@ -1,4 +1,4 @@
-import { Component, inject, computed, signal } from '@angular/core';
+import { Component, inject, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { LucideAngularModule, Heart, ShoppingBag, Trash2 } from 'lucide-angular';
@@ -14,6 +14,7 @@ import { Product } from '../../core/interfaces/product.interface';
   imports: [CommonModule, RouterLink, LucideAngularModule, ProductCard, QuickViewModal],
   templateUrl: './wishlist.page.html',
   styleUrl: './wishlist.page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WishlistPage {
   private wishlistService = inject(WishlistService);
@@ -25,11 +26,9 @@ export class WishlistPage {
     Trash2,
   };
 
-  // Quick View Modal
   public quickViewProduct = signal<Product | null>(null);
   public isQuickViewOpen = signal<boolean>(false);
 
-  // Produtos da wishlist
   public wishlistProducts = computed(() => {
     const wishlistIds = this.wishlistService.getWishlistIds();
     return this.productService

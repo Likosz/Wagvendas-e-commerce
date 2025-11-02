@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal, computed, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
@@ -20,6 +20,7 @@ import { WishlistService } from '../../../core/services/wishlist.service';
   imports: [CommonModule, RouterLink, LucideAngularModule],
   templateUrl: './quick-view-modal.html',
   styleUrl: './quick-view-modal.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuickViewModal {
   private wishlistService = inject(WishlistService);

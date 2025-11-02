@@ -1,7 +1,15 @@
-import { Component, signal, computed, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  signal,
+  computed,
+  HostListener,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ThemeService } from '../../core/services/theme.service';
+import { CartService } from '../../core/services/cart.service';
 import { WishlistService } from '../../core/services/wishlist.service';
 
 import {
@@ -22,9 +30,11 @@ import {
   imports: [CommonModule, RouterLink, RouterLinkActive, LucideAngularModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
   private wishlistService = inject(WishlistService);
+  public cart = inject(CartService);
 
   readonly icons = {
     Search,
@@ -42,7 +52,7 @@ export class Header {
   public searchOpen = signal(false);
 
   // Quantidade de itens no carrinho
-  public cartItemCount = signal(3);
+  public cartItemCount = computed(() => this.cart.count());
 
   public wishlistCount = computed(() => this.wishlistService.count());
 
@@ -62,10 +72,16 @@ export class Header {
 
   constructor(public themeService: ThemeService) {}
 
+  private scrollTicking = false;
   @HostListener('window:scroll')
   onWindowScroll(): void {
-    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-    this.isScrolled.set(scrollPosition > 20);
+    if (this.scrollTicking) return;
+    this.scrollTicking = true;
+    requestAnimationFrame(() => {
+      const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+      this.isScrolled.set(scrollPosition > 20);
+      this.scrollTicking = false;
+    });
   }
 
   public toggleMobileMenu(): void {
@@ -85,6 +101,26 @@ export class Header {
 
   public toggleSearch(): void {
     this.searchOpen.update((value) => !value);
+  }
+
+  // Mini-cart
+  public miniCartOpen = signal(false);
+
+  @HostListener('document:keydown.escape')
+  onEsc(): void {
+    if (this.miniCartOpen()) this.miniCartOpen.set(false);
+  }
+
+  public toggleMiniCart(): void {
+    this.miniCartOpen.update((v) => !v);
+  }
+
+  public closeMiniCart(): void {
+    this.miniCartOpen.set(false);
+  }
+
+  public formatPrice(price: number): string {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
   }
 
   public toggleDarkMode(): void {

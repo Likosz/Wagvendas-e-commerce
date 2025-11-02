@@ -7,6 +7,7 @@ import {
   computed,
   inject,
   effect,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -28,6 +29,7 @@ import { WishlistService } from '../../../core/services/wishlist.service';
   imports: [CommonModule, RouterLink, LucideAngularModule],
   templateUrl: './product-card.html',
   styleUrl: './product-card.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductCard {
   private wishlistService = inject(WishlistService);

@@ -170,29 +170,109 @@
           </button>
 
           <!-- Cart -->
-          <button
-            type="button"
-            class="btn-ghost p-2.5 rounded-lg relative group"
-            routerLink="/carrinho"
-            aria-label="Carrinho de compras - {{ cartItemCount() }} {{
-              cartItemCount() === 1 ? 'item' : 'itens'
-            }}"
-          >
-            <lucide-icon
-              [img]="icons.ShoppingCart"
-              class="w-5 h-5 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
-              aria-hidden="true"
+          <div class="relative">
+            <button
+              type="button"
+              class="btn-ghost p-2.5 rounded-lg relative group"
+              (click)="toggleMiniCart()"
+              aria-haspopup="dialog"
+              [attr.aria-expanded]="miniCartOpen()"
+              aria-controls="mini-cart-panel"
+              aria-label="Carrinho de compras - {{ cartItemCount() }} {{
+                cartItemCount() === 1 ? 'item' : 'itens'
+              }}"
             >
-            </lucide-icon>
-            @if (hasCartItems()) {
-              <span
-                class="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center bg-primary-600 text-white text-xs font-bold rounded-full animate-scale-in"
-                aria-label="{{ cartItemCount() }} itens no carrinho"
+              <lucide-icon
+                [img]="icons.ShoppingCart"
+                class="w-5 h-5 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                aria-hidden="true"
               >
-                {{ cartItemCount() }}
-              </span>
+              </lucide-icon>
+              @if (hasCartItems()) {
+                <span
+                  class="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1.5 flex items-center justify-center bg-primary-600 text-white text-xs font-bold rounded-full animate-scale-in"
+                  aria-label="{{ cartItemCount() }} itens no carrinho"
+                >
+                  {{ cartItemCount() }}
+                </span>
+              }
+            </button>
+
+            @if (miniCartOpen()) {
+              <div
+                id="mini-cart-panel"
+                role="dialog"
+                aria-modal="true"
+                class="absolute right-0 mt-3 w-[24rem] max-h-[75vh] overflow-auto bg-white dark:bg-dark-900 border border-dark-200 dark:border-dark-800 rounded-xl shadow-xl p-4 z-[60]"
+                (click)="$event.stopPropagation()"
+              >
+                <h3 class="sr-only">Mini carrinho</h3>
+
+                @if (cart.count() === 0) {
+                  <div class="text-center py-6 text-dark-600 dark:text-dark-400">
+                    Seu carrinho está vazio.
+                  </div>
+                } @else {
+                  <div class="space-y-3">
+                    @for (entry of cart.entries(); track entry.key) {
+                      <div class="flex items-start gap-3">
+                        <img
+                          [src]="entry.product.thumbnail || entry.product.images[0]"
+                          [alt]="entry.product.name"
+                          class="w-14 h-14 rounded-lg object-cover border border-dark-200 dark:border-dark-800"
+                          loading="lazy"
+                          width="56"
+                          height="56"
+                        />
+                        <div class="flex-1 min-w-0">
+                          <p class="font-medium text-dark-900 dark:text-white truncate">{{ entry.product.name }}</p>
+                          <p class="text-sm text-dark-500 dark:text-dark-400">
+                            {{ formatPrice(entry.unitPrice) }} • Qtde: {{ entry.quantity }}
+                          </p>
+                          <p class="text-sm font-semibold text-dark-900 dark:text-white">
+                            {{ formatPrice(entry.total) }}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          class="text-error-600 hover:text-error-700 p-2 rounded-lg hover:bg-dark-50 dark:hover:bg-dark-800"
+                          (click)="cart.remove(entry.key)"
+                          aria-label="Remover item"
+                        >
+                          <lucide-icon [img]="icons.X" class="w-4 h-4"></lucide-icon>
+                        </button>
+                      </div>
+                    }
+                  </div>
+
+                  <div class="divider my-4"></div>
+
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-dark-600 dark:text-dark-400">Subtotal</span>
+                    <span class="font-semibold text-dark-900 dark:text-white">{{ formatPrice(cart.subtotal()) }}</span>
+                  </div>
+
+                  <div class="mt-4 grid grid-cols-2 gap-3">
+                    <a
+                      routerLink="/carrinho"
+                      class="btn btn-outline w-full text-center"
+                      (click)="closeMiniCart()"
+                      aria-label="Ver carrinho"
+                      >Ver carrinho</a
+                    >
+                    <button
+                      type="button"
+                      routerLink="/checkout"
+                      class="btn btn-primary w-full text-center"
+                      (click)="closeMobileMenu(); closeMiniCart()"
+                    >
+                      Checkout
+                    </button>
+                  </div>
+                }
+              </div>
             }
-          </button>
+          </div>
 
           <!-- User Account -->
           <button
