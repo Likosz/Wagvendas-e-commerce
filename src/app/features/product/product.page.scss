@@ -1,0 +1,182 @@
+// Animação de zoom na imagem
+.cursor-zoom-in {
+  cursor: zoom-in;
+
+  &:active {
+    cursor: zoom-out;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+// Hover effect nos thumbnails
+button[aria-label^='Ver imagem'] {
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0ea5e9;
+    outline-offset: 2px;
+  }
+}
+
+// Botões de quantidade
+button[aria-label='Diminuir quantidade'],
+button[aria-label='Aumentar quantidade'] {
+  &:focus-visible {
+    outline: 2px solid #0ea5e9;
+    outline-offset: -2px;
+  }
+}
+
+// Tabs
+nav[aria-label='Tabs'] button {
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 -2px 0 0 #0ea5e9;
+  }
+}
+
+// Prose styling para descrição
+.prose {
+  max-width: none;
+
+  p {
+    margin-bottom: 1rem;
+  }
+
+  ul,
+  ol {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+}
+
+:host-context(.dark) .prose-invert {
+  color: #cbd5e1;
+
+  strong {
+    color: #f1f5f9;
+  }
+}
+
+// Responsividade
+@media (max-width: 768px) {
+  .grid-cols-5 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  // Tabs em stack no mobile
+  nav[aria-label='Tabs'] {
+    flex-direction: column;
+
+    button {
+      text-align: left;
+      border-bottom: none;
+      border-left: 2px solid transparent;
+
+      &[aria-current='page'] {
+        border-left-color: #0ea5e9;
+      }
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .cursor-zoom-in,
+  button,
+  nav[aria-label='Breadcrumb'],
+  nav[aria-label='Tabs'] {
+    display: none !important;
+  }
+
+  .grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  button[aria-label^='Ver imagem']:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  button {
+    border-width: 3px;
+  }
+
+  .border-2 {
+    border-width: 3px;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid #0ea5e9;
+  outline-offset: 2px;
+}
+
+img {
+  transition: transform 0.3s ease;
+  will-change: transform;
+}
+
+.absolute.top-4 span {
+  animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+// Product grid animations
+.grid > * {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

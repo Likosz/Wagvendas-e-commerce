@@ -12,6 +12,11 @@ export const routes: Routes = [
     title: 'Produtos - WagSales',
   },
   {
+    path: 'produto/:slug',
+    loadComponent: () => import('./features/product/product.page').then((m) => m.ProductPage),
+    title: 'Produto - WagSales',
+  },
+  {
     path: 'ofertas',
     loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar página de ofertas
     title: 'Ofertas - WagSales',
@@ -41,7 +46,6 @@ export const routes: Routes = [
     loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar página de favoritos
     title: 'Favoritos - WagSales',
   },
-  // Fallback para rotas não encontradas
   {
     path: '**',
     redirectTo: '',
