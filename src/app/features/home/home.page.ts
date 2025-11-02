@@ -6,6 +6,7 @@ import { Hero } from './components/hero/hero';
 import { CategoriesCarousel } from './components/categories-carousel/categories-carousel';
 import { ProductGrid } from '../../shared/components/product-grid/product-grid';
 import { ProductFilters } from '../../shared/components/product-filters/product-filters';
+import { QuickViewModal } from '../../shared/components/quick-view-modal/quick-view-modal';
 
 // Services
 import { ProductService } from '../../core/services/product.service';
@@ -14,16 +15,19 @@ import { Product, ProductFilter, ProductSortOption } from '../../core/interfaces
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, Hero, CategoriesCarousel, ProductGrid, ProductFilters],
+  imports: [CommonModule, Hero, CategoriesCarousel, ProductGrid, ProductFilters, QuickViewModal],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',
 })
 export class HomePage implements OnInit {
   private productService = inject(ProductService);
 
-  // UI State
   public isFiltersOpen = signal<boolean>(false);
   public isLoading = signal<boolean>(false);
+
+  // Quick View Modal
+  public quickViewProduct = signal<Product | null>(null);
+  public isQuickViewOpen = signal<boolean>(false);
 
   // Product data from service (using computed signals)
   public get paginatedProducts() {
@@ -43,16 +47,12 @@ export class HomePage implements OnInit {
   }
 
   ngOnInit(): void {
-    // Initial load is already done by ProductService
-    // Just mark as loaded
     this.isLoading.set(false);
   }
 
-  // Filter handlers
   onFilterChange(filter: ProductFilter): void {
     this.isLoading.set(true);
     this.productService.filterProducts(filter);
-    // Simulate network delay for better UX
     setTimeout(() => {
       this.isLoading.set(false);
     }, 300);
@@ -67,7 +67,7 @@ export class HomePage implements OnInit {
     }, 300);
   }
 
-  // Pagination handler
+  // Pagination
   onPageChange(page: number): void {
     this.isLoading.set(true);
     this.productService.setPage(page);
@@ -76,7 +76,6 @@ export class HomePage implements OnInit {
     }, 300);
   }
 
-  // Product actions
   onAddToCart(product: Product): void {
     console.log('Add to cart:', product);
     // TODO: Implement cart service
@@ -88,8 +87,21 @@ export class HomePage implements OnInit {
   }
 
   onQuickView(product: Product): void {
-    console.log('Quick view:', product);
-    // TODO: Implement quick view modal
+    this.quickViewProduct.set(product);
+    this.isQuickViewOpen.set(true);
+  }
+
+  // Quick View Modal handlers
+  closeQuickView(): void {
+    this.isQuickViewOpen.set(false);
+    setTimeout(() => {
+      this.quickViewProduct.set(null);
+    }, 300);
+  }
+
+  onQuickViewAddToCart(data: { product: Product; quantity: number }): void {
+    console.log('Add to cart from quick view:', data);
+    // TODO: Implementar serviço de carrinho
   }
 
   // Mobile filters

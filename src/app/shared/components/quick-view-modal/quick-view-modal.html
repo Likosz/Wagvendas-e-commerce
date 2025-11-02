@@ -1,0 +1,260 @@
+<!-- Modal Overlay -->
+@if (isOpen && product) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/80 backdrop-blur-sm animate-fade-in"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="'quick-view-title-' + product.id"
+    (click)="onBackdropClick($event)"
+    (keydown)="onKeyDown($event)"
+    tabindex="-1"
+  >
+    <!-- Modal Content -->
+    <div
+      class="relative w-full max-w-5xl bg-white dark:bg-dark-900 rounded-2xl shadow-2xl overflow-hidden animate-scale-in max-h-[90vh] overflow-y-auto"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Close Button -->
+      <button
+        type="button"
+        (click)="onClose()"
+        class="absolute top-4 right-4 z-10 p-2 rounded-full bg-white dark:bg-dark-800 hover:bg-dark-100 dark:hover:bg-dark-700 transition-colors shadow-lg"
+        aria-label="Fechar visualização rápida"
+      >
+        <lucide-icon
+          [img]="icons.X"
+          [size]="20"
+          class="text-dark-600 dark:text-dark-400"
+        ></lucide-icon>
+      </button>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-8">
+        <div class="space-y-4">
+          <!-- Imagem Principal -->
+          <div
+            class="relative aspect-square bg-dark-100 dark:bg-dark-800 rounded-xl overflow-hidden"
+          >
+            <img [src]="selectedImage()" [alt]="product.name" class="w-full h-full object-cover" />
+
+            <!-- Badges -->
+            <div class="absolute top-4 left-4 flex flex-col gap-2">
+              @if (product.discount && product.discount > 0) {
+                <span
+                  class="px-3 py-1 bg-error-500 text-white text-sm font-bold rounded-full shadow-lg"
+                >
+                  -{{ product.discount }}%
+                </span>
+              }
+              @if (product.isNew) {
+                <span
+                  class="px-3 py-1 bg-success-500 text-white text-sm font-bold rounded-full shadow-lg"
+                >
+                  NOVO
+                </span>
+              }
+              @if (product.freeShipping) {
+                <span
+                  class="px-3 py-1 bg-accent-500 text-white text-sm font-bold rounded-full shadow-lg"
+                >
+                  FRETE GRÁTIS
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- Thumbnails -->
+          @if (product.images && product.images.length > 1) {
+            <div class="grid grid-cols-4 gap-2">
+              @for (image of product.images; track $index) {
+                <button
+                  type="button"
+                  (click)="selectImage($index)"
+                  class="aspect-square rounded-lg overflow-hidden border-2 transition-all hover:scale-105"
+                  [class.border-primary-600]="selectedImageIndex() === $index"
+                  [class.border-dark-200]="selectedImageIndex() !== $index"
+                  [class.dark:border-primary-600]="selectedImageIndex() === $index"
+                  [class.dark:border-dark-700]="selectedImageIndex() !== $index"
+                  [attr.aria-label]="'Ver imagem ' + ($index + 1)"
+                >
+                  <img
+                    [src]="image"
+                    [alt]="product.name + ' - Imagem ' + ($index + 1)"
+                    class="w-full h-full object-cover"
+                  />
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Informações do Produto -->
+        <div class="flex flex-col space-y-6">
+          <!-- Título e Marca -->
+          <div>
+            <p
+              class="text-sm font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide mb-2"
+            >
+              {{ product.brand }}
+            </p>
+            <h2
+              [id]="'quick-view-title-' + product.id"
+              class="text-2xl md:text-3xl font-bold text-dark-900 dark:text-white mb-3"
+            >
+              {{ product.name }}
+            </h2>
+
+            <!-- Rating -->
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-1">
+                @for (star of starArray(); track star) {
+                  <lucide-icon
+                    [img]="icons.Star"
+                    [size]="16"
+                    [class.text-warning-500]="getStarType(star) === 'full'"
+                    [class.fill-warning-500]="getStarType(star) === 'full'"
+                    [class.text-dark-300]="getStarType(star) === 'empty'"
+                    [class.dark:text-dark-600]="getStarType(star) === 'empty'"
+                  ></lucide-icon>
+                }
+              </div>
+              <span class="text-sm text-dark-600 dark:text-dark-400">
+                {{ product.rating }} ({{ product.reviewCount }} avaliações)
+              </span>
+            </div>
+          </div>
+
+          <!-- Preço -->
+          <div class="py-4 border-y border-dark-200 dark:border-dark-700">
+            @if (product.originalPrice && product.originalPrice > product.price) {
+              <p class="text-base text-dark-500 dark:text-dark-500 line-through mb-1">
+                {{ formatPrice(product.originalPrice) }}
+              </p>
+            }
+            <div class="flex items-baseline gap-3">
+              <p class="text-3xl font-bold text-dark-900 dark:text-white">
+                {{ formatPrice(product.price) }}
+              </p>
+              @if (product.discount && product.discount > 0) {
+                <span class="text-base font-medium text-success-600 dark:text-success-400">
+                  Economize {{ product.discount }}%
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- Descrição Curta -->
+          @if (product.shortDescription) {
+            <p class="text-sm text-dark-700 dark:text-dark-300 leading-relaxed">
+              {{ product.shortDescription }}
+            </p>
+          }
+
+          <!-- Estoque -->
+          <div class="flex items-center gap-2">
+            @if (availableStock() > 0) {
+              <span
+                class="flex items-center gap-2 text-sm text-success-600 dark:text-success-400 font-medium"
+              >
+                <span class="w-2 h-2 bg-success-500 rounded-full animate-pulse"></span>
+                {{ availableStock() }} em estoque
+              </span>
+            } @else {
+              <span
+                class="flex items-center gap-2 text-sm text-error-600 dark:text-error-400 font-medium"
+              >
+                <span class="w-2 h-2 bg-error-500 rounded-full"></span>
+                Fora de estoque
+              </span>
+            }
+          </div>
+
+          <!-- Quantidade -->
+          <div>
+            <label class="block text-sm font-semibold text-dark-900 dark:text-white mb-2">
+              Quantidade
+            </label>
+            <div class="flex items-center gap-3">
+              <div
+                class="flex items-center border-2 border-dark-200 dark:border-dark-700 rounded-lg overflow-hidden"
+              >
+                <button
+                  type="button"
+                  (click)="decreaseQuantity()"
+                  [disabled]="quantity() <= 1"
+                  class="p-3 hover:bg-dark-100 dark:hover:bg-dark-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  aria-label="Diminuir quantidade"
+                >
+                  <lucide-icon [img]="icons.Minus" [size]="18"></lucide-icon>
+                </button>
+
+                <span
+                  class="px-6 py-2 font-semibold text-dark-900 dark:text-white min-w-[4rem] text-center"
+                >
+                  {{ quantity() }}
+                </span>
+
+                <button
+                  type="button"
+                  (click)="increaseQuantity()"
+                  [disabled]="quantity() >= availableStock()"
+                  class="p-3 hover:bg-dark-100 dark:hover:bg-dark-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  aria-label="Aumentar quantidade"
+                >
+                  <lucide-icon [img]="icons.Plus" [size]="18"></lucide-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ações -->
+          <div class="space-y-3 pt-4">
+            <button
+              type="button"
+              (click)="onAddToCart()"
+              [disabled]="availableStock() === 0"
+              class="w-full px-6 py-4 bg-primary-600 hover:bg-primary-700 disabled:bg-dark-300 dark:disabled:bg-dark-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed"
+            >
+              <lucide-icon [img]="icons.ShoppingCart" [size]="20"></lucide-icon>
+              <span>Adicionar ao Carrinho</span>
+            </button>
+
+            <div class="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                (click)="toggleWishlist()"
+                class="px-4 py-3 border-2 border-dark-200 dark:border-dark-700 hover:border-error-500 dark:hover:border-error-500 rounded-xl transition-all flex items-center justify-center gap-2 group"
+                [attr.aria-label]="
+                  isInWishlist() ? 'Remover dos favoritos' : 'Adicionar aos favoritos'
+                "
+              >
+                <lucide-icon
+                  [img]="icons.Heart"
+                  [size]="20"
+                  [class.fill-error-500]="isInWishlist()"
+                  [class.text-error-500]="isInWishlist()"
+                  class="group-hover:text-error-500 group-hover:fill-error-500 transition-all"
+                ></lucide-icon>
+                <span class="text-sm font-medium">{{
+                  isInWishlist() ? 'Favoritado' : 'Favoritar'
+                }}</span>
+              </button>
+
+              <a
+                [routerLink]="['/produto', product.slug]"
+                (click)="onClose()"
+                class="px-4 py-3 border-2 border-dark-200 dark:border-dark-700 hover:border-primary-500 dark:hover:border-primary-500 rounded-xl transition-all flex items-center justify-center gap-2 group text-dark-900 dark:text-white"
+              >
+                <lucide-icon
+                  [img]="icons.ExternalLink"
+                  [size]="20"
+                  class="group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"
+                ></lucide-icon>
+                <span class="text-sm font-medium">Ver Detalhes</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
