@@ -1,16 +1,17 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { LucideAngularModule, Heart, ShoppingBag, Trash2 } from 'lucide-angular';
 import { WishlistService } from '../../core/services/wishlist.service';
 import { ProductService } from '../../core/services/product.service';
 import { ProductCard } from '../../shared/components/product-card/product-card';
+import { QuickViewModal } from '../../shared/components/quick-view-modal/quick-view-modal';
 import { Product } from '../../core/interfaces/product.interface';
 
 @Component({
   selector: 'app-wishlist',
   standalone: true,
-  imports: [CommonModule, RouterLink, LucideAngularModule, ProductCard],
+  imports: [CommonModule, RouterLink, LucideAngularModule, ProductCard, QuickViewModal],
   templateUrl: './wishlist.page.html',
   styleUrl: './wishlist.page.scss',
 })
@@ -24,6 +25,10 @@ export class WishlistPage {
     Trash2,
   };
 
+  // Quick View Modal
+  public quickViewProduct = signal<Product | null>(null);
+  public isQuickViewOpen = signal<boolean>(false);
+
   // Produtos da wishlist
   public wishlistProducts = computed(() => {
     const wishlistIds = this.wishlistService.getWishlistIds();
@@ -32,12 +37,13 @@ export class WishlistPage {
       .filter((product: Product) => wishlistIds.includes(product.id));
   });
 
-  // Contador de produtos
   public count = computed(() => this.wishlistProducts().length);
 
-  // Total da wishlist (soma dos preços)
   public totalPrice = computed(() => {
-    return this.wishlistProducts().reduce((total: number, product: Product) => total + product.price, 0);
+    return this.wishlistProducts().reduce(
+      (total: number, product: Product) => total + product.price,
+      0,
+    );
   });
 
   removeFromWishlist(product: Product): void {
@@ -65,8 +71,21 @@ export class WishlistPage {
   }
 
   onQuickView(product: Product): void {
-    // TODO: Implementar quick view modal
-    console.log('Quick view:', product);
+    this.quickViewProduct.set(product);
+    this.isQuickViewOpen.set(true);
+  }
+
+  // Quick View Modal handlers
+  closeQuickView(): void {
+    this.isQuickViewOpen.set(false);
+    setTimeout(() => {
+      this.quickViewProduct.set(null);
+    }, 300);
+  }
+
+  onQuickViewAddToCart(data: { product: Product; quantity: number }): void {
+    console.log('Add to cart from quick view:', data);
+    // TODO: Implementar serviço de carrinho
   }
 
   formatPrice(price: number): string {

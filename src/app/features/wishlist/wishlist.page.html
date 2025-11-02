@@ -109,3 +109,11 @@
     }
   </div>
 </div>
+
+<!-- Quick View Modal -->
+<app-quick-view-modal
+  [product]="quickViewProduct()"
+  [isOpen]="isQuickViewOpen()"
+  (close)="closeQuickView()"
+  (addToCart)="onQuickViewAddToCart($event)"
+></app-quick-view-modal>
