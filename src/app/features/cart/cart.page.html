@@ -123,6 +123,35 @@
         >
           <h2 class="text-lg font-semibold text-dark-900 dark:text-white mb-4">Resumo</h2>
 
+          <!-- Cupom de desconto -->
+          <div class="mb-4" aria-live="polite">
+            <label for="coupon" class="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-2">Cupom de desconto</label>
+            <div class="flex items-stretch gap-2">
+              <input
+                id="coupon"
+                type="text"
+                [value]="couponInput()"
+                (input)="couponInput.set(($any($event.target).value || '').toUpperCase())"
+                (keydown.enter)="applyCoupon()"
+                placeholder="EX: BEMVINDO10"
+                class="flex-1 px-3 py-2 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800 text-dark-900 dark:text-white"
+                autocomplete="off"
+                aria-describedby="coupon-help"
+                [attr.aria-invalid]="couponError() ? 'true' : 'false'"
+              />
+              @if (!activeCoupon()) {
+                <button type="button" class="btn btn-outline" (click)="applyCoupon()">Aplicar</button>
+              } @else {
+                <button type="button" class="btn btn-outline" (click)="removeCoupon()">Remover</button>
+              }
+            </div>
+            <p id="coupon-help" class="mt-1 text-xs" role="status" aria-live="polite"
+               [class.text-error-600]="couponError()" [class.text-dark-500]="!couponError()"
+               [class.dark:text-error-400]="couponError()" [class.dark:text-dark-400]="!couponError()">
+              @if (couponError()) { {{ couponError() }} } @else if (activeCoupon()) { {{ activeCoupon()!.description || 'Cupom aplicado' }} } @else { Digite seu cupom e pressione Enter ou clique em aplicar }
+            </p>
+          </div>
+
           <div class="space-y-3 text-sm">
             <div class="flex justify-between">
               <span class="text-dark-600 dark:text-dark-400">Subtotal</span>
@@ -131,11 +160,16 @@
               </span>
             </div>
 
+            @if (discount() > 0) {
+              <div class="flex justify-between text-success-700 dark:text-success-400">
+                <span>Desconto</span>
+                <span>-{{ formatPrice(discount()) }}</span>
+              </div>
+            }
+
             <div class="flex justify-between">
               <span class="text-dark-600 dark:text-dark-400">Frete</span>
-              <span class="font-medium text-dark-900 dark:text-white">
-                {{ shipping() === 0 ? 'Grátis' : formatPrice(shipping()) }}
-              </span>
+              <span class="font-medium text-dark-900 dark:text-white">{{ shippingLabel() }}</span>
             </div>
 
             <div class="divider my-3"></div>
@@ -157,6 +191,12 @@
           >
             Ir para o checkout
           </button>
+
+          @if (discount() > 0) {
+            <p class="text-xs text-success-700 dark:text-success-400 mt-2">
+              Você economizou {{ formatPrice(discount()) }} neste pedido.
+            </p>
+          }
 
           <p class="text-xs text-dark-500 dark:text-dark-400 mt-2">
             Frete grátis em pedidos a partir de R$ 199,00.
