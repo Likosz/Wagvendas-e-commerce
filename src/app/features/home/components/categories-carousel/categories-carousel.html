@@ -1,0 +1,115 @@
+<section class="py-16 md:py-20 bg-dark-50 dark:bg-dark-950" aria-labelledby="categories-title">
+  <div class="container-custom">
+    <!-- Section Header -->
+    <div class="flex items-center justify-between mb-8 md:mb-12">
+      <div>
+        <h2
+          id="categories-title"
+          class="text-3xl md:text-4xl font-bold text-dark-900 dark:text-dark-50 mb-2"
+        >
+          Explore por Categoria
+        </h2>
+        <p class="text-dark-600 dark:text-dark-400 text-lg">
+          Encontre exatamente o que você procura
+        </p>
+      </div>
+
+      <a
+        routerLink="/categorias"
+        class="hidden md:inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold transition-colors group"
+        aria-label="Ver todas as categorias"
+      >
+        <span>Ver todas</span>
+        <lucide-icon
+          [img]="icons.ChevronRight"
+          class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+          aria-hidden="true"
+        ></lucide-icon>
+      </a>
+    </div>
+
+    <!-- Swiper Carousel -->
+    <swiper-container
+      init="false"
+      class="categories-swiper"
+      role="region"
+      aria-label="Carrossel de categorias"
+    >
+      @for (category of categories(); track category.id) {
+        <swiper-slide>
+          <a
+            [routerLink]="['/produtos']"
+            [queryParams]="{ categoria: category.slug }"
+            class="group block relative overflow-hidden rounded-2xl bg-white dark:bg-dark-900 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-primary-500/50"
+            [attr.aria-label]="
+              'Categoria ' + category.name + ' com ' + category.productCount + ' produtos'
+            "
+          >
+            <!-- Image -->
+            <div class="relative aspect-square overflow-hidden">
+              <img
+                [src]="category.image"
+                [alt]="'Imagem da categoria ' + category.name"
+                class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+              />
+
+              <!-- Gradient Overlay -->
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"
+              ></div>
+
+              <!-- Category Info -->
+              <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3
+                  class="text-2xl font-bold mb-2 group-hover:translate-y-[-4px] transition-transform"
+                >
+                  {{ category.name }}
+                </h3>
+                <p class="text-white/90 text-sm mb-3 line-clamp-2">
+                  {{ category.description }}
+                </p>
+                <div class="flex items-center justify-between">
+                  <span class="text-white/80 text-sm"> {{ category.productCount }} produtos </span>
+                  <span
+                    class="inline-flex items-center justify-center w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full group-hover:bg-white/30 group-hover:scale-110 transition-all"
+                  >
+                    <lucide-icon
+                      [img]="icons.ChevronRight"
+                      class="w-5 h-5"
+                      aria-hidden="true"
+                    ></lucide-icon>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Badge de destaque -->
+              @if (category.featured) {
+                <div
+                  class="absolute top-4 right-4 px-3 py-1 bg-accent-500 text-white text-xs font-semibold rounded-full shadow-lg"
+                >
+                  Destaque
+                </div>
+              }
+            </div>
+
+            <!-- Color Accent Bar -->
+            <div class="h-1 w-full bg-gradient-to-r {{ category.color }}"></div>
+          </a>
+        </swiper-slide>
+      }
+    </swiper-container>
+
+    <!-- Ver todas link (mobile) -->
+    <div class="mt-8 text-center md:hidden">
+      <a
+        routerLink="/categorias"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors shadow-lg hover:shadow-xl"
+        aria-label="Ver todas as categorias"
+      >
+        <span>Ver Todas as Categorias</span>
+        <lucide-icon [img]="icons.ChevronRight" class="w-5 h-5" aria-hidden="true"></lucide-icon>
+      </a>
+    </div>
+  </div>
+</section>

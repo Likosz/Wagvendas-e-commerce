@@ -34,10 +34,8 @@ export class Header {
     Heart,
   };
 
-  // Estado do menu mobile
   public mobileMenuOpen = signal(false);
 
-  // Estado da busca mobile
   public searchOpen = signal(false);
 
   // Quantidade de itens no carrinho (mockado por enquanto)

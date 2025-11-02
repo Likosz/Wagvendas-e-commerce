@@ -1,9 +1,8 @@
-/* ========================================
-   WAGSALES - GLOBAL STYLES
-   E-commerce moderno com Angular + TailwindCSS
-   ======================================== */
+/* Swiper CSS - deve vir antes de tudo */
+@use 'swiper/css';
+@use 'swiper/css/navigation';
+@use 'swiper/css/pagination';
 
-/* Angular Material Theme Configuration */
 @use '@angular/material' as mat;
 
 /* Tailwind Base Imports */
@@ -13,25 +12,22 @@
 
 /* Configuração do tema Material personalizado */
 html {
-  @include mat.theme((
-    color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Inter,
-    density: 0,
-  ));
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Inter,
+      density: 0,
+    )
+  );
 }
 
-/* ========================================
-   IMPORTAÇÃO DE FONTES
-   ======================================== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
-/* ========================================
-   VARIÁVEIS CSS CUSTOMIZADAS
-   ======================================== */
+/* VARIÁVEIS CSS CUSTOMIZADAS */
 :root {
   /* Cores principais */
   --color-primary: #0ea5e9;
@@ -76,9 +72,6 @@ html {
   --border-color: #334155;
 }
 
-/* ========================================
-   RESET & BASE STYLES
-   ======================================== */
 @layer base {
   * {
     box-sizing: border-box;
@@ -95,11 +88,23 @@ html {
     @apply transition-colors duration-300;
     height: 100%;
     margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    font-family:
+      'Inter',
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      sans-serif;
   }
 
   /* Typography */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-semibold leading-tight;
   }
 
@@ -137,7 +142,9 @@ html {
   }
 
   /* Form Elements */
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     @apply w-full px-4 py-2.5 rounded-lg;
     @apply bg-white dark:bg-dark-800;
     @apply border border-dark-200 dark:border-dark-700;
@@ -154,9 +161,7 @@ html {
   }
 }
 
-/* ========================================
-   COMPONENTES REUTILIZÁVEIS
-   ======================================== */
+/* COMPONENTES REUTILIZÁVEIS */
 @layer components {
   /* Botões */
   .btn {
@@ -234,9 +239,6 @@ html {
   }
 }
 
-/* ========================================
-   UTILITIES CUSTOMIZADAS
-   ======================================== */
 @layer utilities {
   /* Glassmorphism */
   .glass {
@@ -283,9 +285,7 @@ html {
   }
 }
 
-/* ========================================
-   ANIMAÇÕES CUSTOMIZADAS
-   ======================================== */
+/*  ANIMAÇÕES */
 @keyframes shimmer {
   0% {
     background-position: -1000px 0;
@@ -301,18 +301,14 @@ html {
   background-size: 1000px 100%;
 }
 
-/* ========================================
-   RESPONSIVE UTILITIES
-   ======================================== */
+/* RESPONSIVE */
 @media (max-width: 640px) {
   .container-custom {
     @apply px-4;
   }
 }
 
-/* ========================================
-   ACESSIBILIDADE
-   ======================================== */
+/* ACESSIBILIDADE */
 /* Focus visible para keyboard navigation */
 .focus-visible:focus {
   @apply outline-none ring-2 ring-primary-500 ring-offset-2;
@@ -329,9 +325,6 @@ html {
   }
 }
 
-/* ========================================
-   PRINT STYLES
-   ======================================== */
 @media print {
   body {
     @apply bg-white text-black;

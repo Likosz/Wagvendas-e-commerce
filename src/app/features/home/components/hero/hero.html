@@ -1,0 +1,204 @@
+<section
+  class="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-600 text-white"
+  aria-labelledby="hero-title"
+>
+  <!-- Background Pattern -->
+  <div
+    class="absolute inset-0 opacity-10"
+    style="
+      background-image: url(&quot;data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E&quot;);
+    "
+    aria-hidden="true"
+  ></div>
+
+  <!-- Animated gradient overlay -->
+  <div
+    class="absolute inset-0 bg-gradient-radial animate-pulse-slow opacity-20"
+    aria-hidden="true"
+  ></div>
+
+  <div class="container-custom relative z-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-16 md:py-24 lg:py-32">
+      <!-- Content -->
+      <div class="text-center lg:text-left space-y-8 animate-fade-in-up">
+        <!-- Badge -->
+        <div
+          class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 animate-bounce-slow"
+        >
+          <span class="relative flex h-2 w-2">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"
+            ></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-accent-500"></span>
+          </span>
+          <span class="text-sm font-medium">Novidades toda semana!</span>
+        </div>
+
+        <!-- Main Heading -->
+        <div>
+          <h1
+            id="hero-title"
+            class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 animate-fade-in-up"
+            style="animation-delay: 0.1s"
+          >
+            Compre com
+            <span class="relative inline-block">
+              <span
+                class="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-accent-300 to-accent-500"
+              >
+                Estilo
+              </span>
+              <span class="absolute -bottom-2 left-0 w-full h-3 bg-accent-500/30 -skew-y-1"></span>
+            </span>
+            <br />
+            Receba com
+            <span class="relative inline-block">
+              <span
+                class="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-accent-300 to-accent-500"
+              >
+                Rapidez
+              </span>
+              <span class="absolute -bottom-2 left-0 w-full h-3 bg-accent-500/30 skew-y-1"></span>
+            </span>
+          </h1>
+
+          <p
+            class="text-lg md:text-xl text-white/90 max-w-2xl animate-fade-in-up"
+            style="animation-delay: 0.2s"
+          >
+            Descubra milhares de produtos com os melhores preços do mercado. Frete grátis e entrega
+            rápida para todo o Brasil.
+          </p>
+        </div>
+
+        <!-- CTAs -->
+        <div
+          class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up"
+          style="animation-delay: 0.3s"
+        >
+          <a
+            routerLink="/produtos"
+            class="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-primary-600 font-semibold rounded-xl hover:bg-dark-50 hover:shadow-2xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/50"
+            aria-label="Ver todos os produtos"
+          >
+            <span>Ver Produtos</span>
+            <lucide-icon
+              [img]="icons.ArrowRight"
+              class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+              aria-hidden="true"
+            ></lucide-icon>
+          </a>
+
+          <a
+            routerLink="/ofertas"
+            class="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-xl border-2 border-white/30 hover:bg-white/20 hover:border-white/50 hover:shadow-xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/50"
+            aria-label="Ver ofertas especiais"
+          >
+            <span>Ver Ofertas</span>
+            <lucide-icon
+              [img]="icons.Zap"
+              class="w-5 h-5 group-hover:rotate-12 transition-transform"
+              aria-hidden="true"
+            ></lucide-icon>
+          </a>
+        </div>
+
+        <!-- Promotional Badges -->
+        <div class="flex flex-wrap gap-3 justify-center lg:justify-start pt-4">
+          @for (badge of badges; track badge.text) {
+            <div
+              class="inline-flex items-center gap-2 px-4 py-2 {{
+                badge.color
+              }} rounded-lg text-white text-sm font-medium shadow-lg animate-fade-in"
+              [style.animation-delay]="0.4 + $index * 0.1 + 's'"
+            >
+              <lucide-icon [img]="badge.icon" class="w-4 h-4" aria-hidden="true"></lucide-icon>
+              <span>{{ badge.text }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Hero Image/Illustration -->
+      <div class="relative hidden lg:block animate-fade-in-right">
+        <!-- Floating cards effect -->
+        <div class="relative w-full h-[500px]">
+          <!-- Card 1 -->
+          <div
+            class="absolute top-0 right-0 w-64 h-80 bg-white rounded-2xl shadow-2xl overflow-hidden transform rotate-6 hover:rotate-3 transition-transform duration-500 animate-float"
+            style="animation-delay: 0s"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop"
+              alt="Produto em destaque - Headphones"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div
+              class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent"
+            >
+              <p class="text-white font-semibold">Eletrônicos</p>
+              <p class="text-white/80 text-sm">Até 50% OFF</p>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div
+            class="absolute top-20 left-0 w-56 h-72 bg-white rounded-2xl shadow-2xl overflow-hidden transform -rotate-6 hover:-rotate-3 transition-transform duration-500 animate-float"
+            style="animation-delay: 0.5s"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop"
+              alt="Produto em destaque - Relógio"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div
+              class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent"
+            >
+              <p class="text-white font-semibold">Acessórios</p>
+              <p class="text-white/80 text-sm">Lançamentos</p>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div
+            class="absolute bottom-0 right-12 w-60 h-72 bg-white rounded-2xl shadow-2xl overflow-hidden transform rotate-3 hover:rotate-0 transition-transform duration-500 animate-float"
+            style="animation-delay: 1s"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop"
+              alt="Produto em destaque - Tênis"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div
+              class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent"
+            >
+              <p class="text-white font-semibold">Moda</p>
+              <p class="text-white/80 text-sm">Tendências 2025</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wave divider -->
+  <div class="absolute bottom-0 left-0 right-0">
+    <svg
+      viewBox="0 0 1440 120"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-full h-auto"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M0 0L60 10C120 20 240 40 360 46.7C480 53 600 47 720 43.3C840 40 960 40 1080 46.7C1200 53 1320 67 1380 73.3L1440 80V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0V0Z"
+        fill="currentColor"
+        class="text-dark-50 dark:text-dark-950"
+      />
+    </svg>
+  </div>
+</section>

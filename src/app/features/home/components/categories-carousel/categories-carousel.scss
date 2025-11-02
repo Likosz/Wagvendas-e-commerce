@@ -1,0 +1,183 @@
+// Customização do Swiper
+.categories-swiper {
+  --swiper-theme-color: #0ea5e9; // primary-500
+  --swiper-navigation-size: 32px;
+
+  // Padding para acomodar navigation buttons
+  padding: 0 48px;
+
+  @media (max-width: 768px) {
+    padding: 0 16px;
+  }
+
+  // Navigation buttons
+  ::part(button-prev),
+  ::part(button-next) {
+    background: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #f1f5f9;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      transform: scale(1.1);
+    }
+
+    &::after {
+      font-size: 20px;
+      font-weight: bold;
+      color: #0ea5e9;
+    }
+
+    @media (max-width: 768px) {
+      width: 36px;
+      height: 36px;
+
+      &::after {
+        font-size: 16px;
+      }
+    }
+  }
+
+  // Pagination (bullets)
+  ::part(pagination) {
+    bottom: -40px;
+  }
+
+  ::part(bullet) {
+    width: 10px;
+    height: 10px;
+    background: #cbd5e1;
+    opacity: 1;
+    transition: all 0.3s ease;
+  }
+
+  ::part(bullet-active) {
+    width: 24px;
+    border-radius: 5px;
+    background: #0ea5e9;
+  }
+}
+
+// Dark mode adjustments
+:host-context(.dark) {
+  .categories-swiper {
+    ::part(button-prev),
+    ::part(button-next) {
+      background: #1e293b;
+
+      &:hover {
+        background: #334155;
+      }
+
+      &::after {
+        color: #38bdf8;
+      }
+    }
+
+    ::part(bullet) {
+      background: #475569;
+    }
+
+    ::part(bullet-active) {
+      background: #38bdf8;
+    }
+  }
+}
+
+// Category card hover effects
+swiper-slide {
+  a {
+    // Smooth transition para todas as propriedades
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    // Efeito de profundidade no hover
+    &:hover {
+      z-index: 10;
+    }
+
+    // Focus state para acessibilidade
+    &:focus-visible {
+      outline: none;
+      ring: 4px;
+      ring-color: rgba(14, 165, 233, 0.5);
+    }
+  }
+
+  // Text truncate helper
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+// Animação de entrada
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+swiper-slide {
+  animation: fadeIn 0.6s ease-out forwards;
+  opacity: 0;
+
+  @for $i from 1 through 8 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
+}
+
+// Responsividade
+@media (max-width: 640px) {
+  swiper-slide {
+    animation: none;
+    opacity: 1;
+  }
+
+  // Ajusta espaçamento
+  section {
+    .container-custom {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+}
+
+// Acessibilidade - respeita preferência de animações
+@media (prefers-reduced-motion: reduce) {
+  swiper-slide {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  * {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+// Print styles
+@media print {
+  .categories-swiper {
+    ::part(button-prev),
+    ::part(button-next),
+    ::part(pagination) {
+      display: none !important;
+    }
+  }
+
+  swiper-slide {
+    page-break-inside: avoid;
+  }
+}
