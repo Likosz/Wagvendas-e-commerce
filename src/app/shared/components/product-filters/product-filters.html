@@ -1,0 +1,242 @@
+<aside
+  class="product-filters bg-white dark:bg-dark-900 rounded-xl shadow-sm overflow-hidden"
+  role="region"
+  aria-label="Filtros de produtos"
+>
+  <!-- Header -->
+  <div class="flex items-center justify-between p-4 border-b border-dark-200 dark:border-dark-700">
+    <div class="flex items-center gap-2">
+      <lucide-icon [img]="icons.SlidersHorizontal" [size]="20" class="text-primary-600 dark:text-primary-400"></lucide-icon>
+      <h2 class="text-lg font-semibold text-dark-900 dark:text-white">Filtros</h2>
+      @if (activeFilterCount() > 0) {
+        <span
+          class="ml-2 px-2 py-0.5 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-xs font-semibold rounded-full"
+          [attr.aria-label]="activeFilterCount() + ' filtros ativos'"
+        >
+          {{ activeFilterCount() }}
+        </span>
+      }
+    </div>
+
+    <!-- Close button (mobile) -->
+    <button
+      type="button"
+      (click)="onCloseDrawer()"
+      class="lg:hidden p-2 rounded-lg hover:bg-dark-100 dark:hover:bg-dark-800 transition-colors focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-500/50"
+      aria-label="Fechar filtros"
+    >
+      <lucide-icon [img]="icons.X" [size]="20"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- Filters Container -->
+  <div class="p-4 space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+    <!-- Clear Filters Button -->
+    @if (hasActiveFilters()) {
+      <button
+        type="button"
+        (click)="clearFilters()"
+        class="w-full py-2.5 px-4 bg-dark-100 dark:bg-dark-800 hover:bg-dark-200 dark:hover:bg-dark-700 text-dark-900 dark:text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-500/50"
+        aria-label="Limpar todos os filtros"
+      >
+        <lucide-icon [img]="icons.X" [size]="18"></lucide-icon>
+        <span>Limpar Filtros</span>
+      </button>
+    }
+
+    <!-- Categories Filter -->
+    <div class="filter-section">
+      <h3 class="filter-title">Categorias</h3>
+      <div class="space-y-2">
+        @for (category of categoryOptions(); track category.id) {
+          <label class="filter-checkbox-label">
+            <input
+              type="checkbox"
+              [checked]="selectedCategories().includes(category.id)"
+              (change)="onCategoryChange(category.id, $any($event.target).checked)"
+              class="filter-checkbox"
+              [attr.aria-label]="'Filtrar por ' + category.label"
+            />
+            <span class="filter-checkbox-text">
+              {{ category.label }}
+              @if (category.count) {
+                <span class="filter-count">({{ category.count }})</span>
+              }
+            </span>
+          </label>
+        }
+      </div>
+    </div>
+
+    <!-- Price Range Filter -->
+    <div class="filter-section">
+      <h3 class="filter-title">Faixa de Preço</h3>
+      <div class="space-y-3">
+        <!-- Min Price Input -->
+        <div>
+          <label for="min-price" class="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
+            Preço Mínimo
+          </label>
+          <input
+            id="min-price"
+            type="range"
+            [min]="priceRange().min"
+            [max]="priceRange().max"
+            [value]="minPrice()"
+            (input)="minPrice.set(+$any($event.target).value); onPriceChange()"
+            class="w-full h-2 bg-dark-200 dark:bg-dark-700 rounded-lg appearance-none cursor-pointer accent-primary-600"
+            [attr.aria-label]="'Preço mínimo: ' + formatPrice(minPrice())"
+          />
+          <p class="text-sm font-semibold text-dark-900 dark:text-white mt-1">
+            {{ formatPrice(minPrice()) }}
+          </p>
+        </div>
+
+        <!-- Max Price Input -->
+        <div>
+          <label for="max-price" class="block text-sm font-medium text-dark-700 dark:text-dark-300 mb-1">
+            Preço Máximo
+          </label>
+          <input
+            id="max-price"
+            type="range"
+            [min]="priceRange().min"
+            [max]="priceRange().max"
+            [value]="maxPrice()"
+            (input)="maxPrice.set(+$any($event.target).value); onPriceChange()"
+            class="w-full h-2 bg-dark-200 dark:bg-dark-700 rounded-lg appearance-none cursor-pointer accent-primary-600"
+            [attr.aria-label]="'Preço máximo: ' + formatPrice(maxPrice())"
+          />
+          <p class="text-sm font-semibold text-dark-900 dark:text-white mt-1">
+            {{ formatPrice(maxPrice()) }}
+          </p>
+        </div>
+
+        <!-- Price Range Display -->
+        <div class="flex items-center justify-between p-3 bg-dark-50 dark:bg-dark-800 rounded-lg">
+          <span class="text-sm text-dark-600 dark:text-dark-400">Faixa:</span>
+          <span class="text-sm font-semibold text-dark-900 dark:text-white">
+            {{ formatPrice(minPrice()) }} - {{ formatPrice(maxPrice()) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Brands Filter -->
+    <div class="filter-section">
+      <h3 class="filter-title">Marcas</h3>
+      <div class="space-y-2 max-h-48 overflow-y-auto pr-2">
+        @for (brand of brandOptions(); track brand.id) {
+          <label class="filter-checkbox-label">
+            <input
+              type="checkbox"
+              [checked]="selectedBrands().includes(brand.label)"
+              (change)="onBrandChange(brand.label, $any($event.target).checked)"
+              class="filter-checkbox"
+              [attr.aria-label]="'Filtrar por marca ' + brand.label"
+            />
+            <span class="filter-checkbox-text">{{ brand.label }}</span>
+          </label>
+        }
+      </div>
+    </div>
+
+    <!-- Rating Filter -->
+    <div class="filter-section">
+      <h3 class="filter-title">Avaliação Mínima</h3>
+      <div class="space-y-2">
+        @for (rating of getStarArray(); track rating) {
+          <button
+            type="button"
+            (click)="onRatingChange(rating)"
+            class="w-full flex items-center gap-2 p-2 rounded-lg transition-colors"
+            [class.bg-primary-50]="selectedRating() === rating"
+            [class.dark:bg-primary-900/20]="selectedRating() === rating"
+            [class.hover:bg-dark-50]="selectedRating() !== rating"
+            [class.dark:hover:bg-dark-800]="selectedRating() !== rating"
+            [attr.aria-label]="rating + ' estrelas ou mais'"
+            [attr.aria-pressed]="selectedRating() === rating"
+          >
+            <div class="flex items-center gap-0.5">
+              @for (star of [1, 2, 3, 4, 5]; track star) {
+                <lucide-icon
+                  [img]="icons.Star"
+                  [size]="16"
+                  [class.text-warning-500]="star <= rating"
+                  [class.text-dark-300]="star > rating"
+                  [class.dark:text-dark-600]="star > rating"
+                  aria-hidden="true"
+                ></lucide-icon>
+              }
+            </div>
+            <span class="text-sm font-medium text-dark-700 dark:text-dark-300">e acima</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Tags Filter -->
+    @if (tagOptions().length > 0) {
+      <div class="filter-section">
+        <h3 class="filter-title">Tags</h3>
+        <div class="flex flex-wrap gap-2">
+          @for (tag of tagOptions(); track tag.id) {
+            <button
+              type="button"
+              (click)="onTagChange(tag.label, !selectedTags().includes(tag.label))"
+              class="px-3 py-1.5 text-sm font-medium rounded-full transition-all"
+              [class.bg-primary-600]="selectedTags().includes(tag.label)"
+              [class.text-white]="selectedTags().includes(tag.label)"
+              [class.bg-dark-100]="!selectedTags().includes(tag.label)"
+              [class.dark:bg-dark-800]="!selectedTags().includes(tag.label)"
+              [class.text-dark-700]="!selectedTags().includes(tag.label)"
+              [class.dark:text-dark-300]="!selectedTags().includes(tag.label)"
+              [class.hover:bg-dark-200]="!selectedTags().includes(tag.label)"
+              [class.dark:hover:bg-dark-700]="!selectedTags().includes(tag.label)"
+              [attr.aria-label]="'Filtrar por tag ' + tag.label"
+              [attr.aria-pressed]="selectedTags().includes(tag.label)"
+            >
+              {{ tag.label }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Quick Filters -->
+    <div class="filter-section">
+      <h3 class="filter-title">Filtros Rápidos</h3>
+      <div class="space-y-2">
+        
+        <label class="filter-checkbox-label">
+          <input
+            type="checkbox"
+            [checked]="inStockOnly()"
+            (change)="onInStockChange($any($event.target).checked)"
+            class="filter-checkbox"
+            aria-label="Apenas produtos em estoque"
+          />
+          <span class="filter-checkbox-text inline-flex items-center gap-2">
+            <lucide-icon [img]="icons.Package" [size]="18" class="text-success-600 dark:text-success-400"></lucide-icon>
+            Em Estoque
+          </span>
+        </label>
+
+        <!-- Free Shipping Only -->
+        <label class="filter-checkbox-label">
+          <input
+            type="checkbox"
+            [checked]="freeShippingOnly()"
+            (change)="onFreeShippingChange($any($event.target).checked)"
+            class="filter-checkbox"
+            aria-label="Apenas frete grátis"
+          />
+          <span class="filter-checkbox-text inline-flex items-center gap-2">
+            <lucide-icon [img]="icons.Truck" [size]="18" class="text-accent-600 dark:text-accent-400"></lucide-icon>
+            Frete Grátis
+          </span>
+        </label>
+      </div>
+    </div>
+  </div>
+</aside>

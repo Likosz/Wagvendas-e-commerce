@@ -4,11 +4,82 @@
 <!-- Categories Carousel -->
 <app-categories-carousel />
 
+<!-- Products Section -->
+<section class="py-16 md:py-20 bg-dark-50 dark:bg-dark-950">
+  <div class="container-custom">
+    <!-- Section Header -->
+    <div class="mb-8">
+      <h2 class="text-3xl md:text-4xl font-bold text-dark-900 dark:text-white mb-3">
+        Nossos Produtos
+      </h2>
+      <p class="text-base text-dark-600 dark:text-dark-400 max-w-2xl">
+        Explore nossa seleção completa de produtos com os melhores preços e qualidade garantida.
+      </p>
+    </div>
+
+    <!-- Products Grid with Filters -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Filters Sidebar (Desktop) -->
+      <aside class="hidden lg:block lg:col-span-3">
+        <app-product-filters
+          (filterChange)="onFilterChange($event)"
+          (closeDrawer)="closeFilters()"
+        ></app-product-filters>
+      </aside>
+
+      <!-- Product Grid -->
+      <div class="lg:col-span-9">
+        <app-product-grid
+          [products]="paginatedProducts"
+          [loading]="isLoading()"
+          [totalProducts]="totalProducts"
+          [currentPage]="currentPage"
+          [totalPages]="totalPages"
+          (pageChange)="onPageChange($event)"
+          (sortChange)="onSortChange($event)"
+          (addToCart)="onAddToCart($event)"
+          (toggleWishlist)="onToggleWishlist($event)"
+          (quickView)="onQuickView($event)"
+          (openFilters)="openFilters()"
+        ></app-product-grid>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mobile Filters Drawer -->
+@if (isFiltersOpen()) {
+  <div
+    class="fixed inset-0 z-50 lg:hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Filtros de produtos"
+    (click)="closeFilters()"
+  >
+    <!-- Backdrop -->
+    <div
+      class="fixed inset-0 bg-dark-900/80 backdrop-blur-sm"
+      aria-hidden="true"
+    ></div>
+
+    <!-- Drawer -->
+    <div
+      class="fixed top-0 left-0 bottom-0 w-full max-w-sm bg-white dark:bg-dark-900 overflow-y-auto"
+      (click)="$event.stopPropagation()"
+    >
+      <app-product-filters
+        (filterChange)="onFilterChange($event)"
+        (closeDrawer)="closeFilters()"
+      ></app-product-filters>
+    </div>
+  </div>
+}
+
 <!--
   FUTURAS SEÇÕES (Próximos commits):
-  - Produtos em Destaque
-  - Ofertas Relâmpago
-  - Marcas Parceiras
-  - Depoimentos
+  - Produtos em Destaque (Featured Products)
+  - Ofertas Relâmpago (Flash Sales)
+  - Marcas Parceiras (Partner Brands)
+  - Depoimentos (Testimonials)
   - Newsletter (já está no footer)
 -->

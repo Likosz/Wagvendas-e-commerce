@@ -1,0 +1,236 @@
+// Product Grid Container
+.product-grid-container {
+  scroll-margin-top: 100px;
+}
+
+select {
+  // Custom arrow
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  &::-ms-expand {
+    display: none;
+  }
+}
+
+:host-context(.dark) select {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+// View mode button animations
+button[aria-pressed='true'] {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+// Pagination button disabled state
+button[disabled] {
+  pointer-events: none;
+}
+
+.product-grid-container {
+  scroll-behavior: smooth;
+}
+
+// List view specific styles
+.flex-col {
+  app-product-card {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+// Grid animations
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gap-6 > * {
+  animation: fade-in 0.3s ease-out forwards;
+  opacity: 0;
+
+  @for $i from 1 through 12 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.05}s;
+    }
+  }
+}
+
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.w-24.h-24 {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+// Toolbar shadow on scroll
+.product-grid-container > div:first-child {
+  position: sticky;
+  top: 80px;
+  z-index: 10;
+  transition: box-shadow 0.3s ease;
+
+  &.scrolled {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  .gap-6 > * {
+    animation-delay: 0s !important;
+  }
+
+  nav button {
+    min-width: 36px;
+    padding: 0.5rem;
+  }
+
+  .product-grid-container > div:first-child {
+    top: 60px;
+  }
+}
+
+// Print styles
+@media print {
+  .product-grid-container > div:first-child {
+    display: none !important;
+  }
+
+  nav {
+    display: none !important;
+  }
+
+  .gap-6 {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-grid-container,
+  .gap-6 > *,
+  .w-24.h-24,
+  button,
+  select {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .product-grid-container {
+    scroll-behavior: auto;
+  }
+}
+
+@media (prefers-contrast: high) {
+  button,
+  select {
+    border-width: 2px;
+  }
+
+  button[aria-pressed='true'] {
+    border-width: 3px;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid #0ea5e9;
+  outline-offset: 2px;
+}
+
+// Loading state shimmer (for skeleton loaders)
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+// Pagination active page pulse
+button[aria-current='page'] {
+  animation: page-pulse 0.3s ease-out;
+}
+
+@keyframes page-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// View mode toggle animation
+div[role='group'] button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+nav span[aria-hidden='true'] {
+  user-select: none;
+}
+
+// Scrollbar styling
+.product-grid-container {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: #94a3b8;
+    }
+  }
+}
+
+:host-context(.dark) .product-grid-container {
+  scrollbar-color: #475569 #1e293b;
+
+  &::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #475569;
+
+    &:hover {
+      background: #64748b;
+    }
+  }
+}
