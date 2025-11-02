@@ -1,0 +1,134 @@
+<section class="py-10 md:py-14 bg-dark-50 dark:bg-dark-950">
+  <div class="container-custom grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="lg:col-span-2">
+      <header class="mb-6 flex items-center gap-4 text-sm">
+        <span class="inline-flex items-center gap-2 text-primary-600">
+          <lucide-icon [img]="icons.User" class="w-4 h-4"></lucide-icon>
+          Dados pessoais
+        </span>
+        <span aria-hidden="true" class="text-dark-400">/</span>
+        <span class="inline-flex items-center gap-2 text-primary-600">
+          <lucide-icon [img]="icons.MapPin" class="w-4 h-4"></lucide-icon>
+          Endereço
+        </span>
+      </header>
+
+      <form novalidate (submit)="$event.preventDefault(); continueToPayment()" class="bg-white dark:bg-dark-900 p-6 rounded-xl shadow-sm space-y-8">
+        <!-- Dados pessoais -->
+        <section [formGroup]="customerForm" class="space-y-5">
+          <div>
+            <label for="fullName" class="block text-sm font-medium">Nome completo</label>
+            <input id="fullName" type="text" formControlName="fullName" class="w-full px-4 py-2.5 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800" [attr.aria-invalid]="customerForm.controls.fullName.invalid && customerForm.controls.fullName.touched" />
+            @if (customerForm.controls.fullName.invalid && customerForm.controls.fullName.touched) {
+              <p class="text-xs text-error-600 mt-1">Informe seu nome.</p>
+            }
+          </div>
+
+          <div>
+            <label for="email" class="block text-sm font-medium">E-mail</label>
+            <input id="email" type="email" formControlName="email" class="w-full px-4 py-2.5 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800" [attr.aria-invalid]="customerForm.controls.email.invalid && customerForm.controls.email.touched" />
+            @if (customerForm.controls.email.invalid && customerForm.controls.email.touched) {
+              <p class="text-xs text-error-600 mt-1">Informe um e-mail válido.</p>
+            }
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="phone" class="block text-sm font-medium">Telefone</label>
+              <input id="phone" type="text" formControlName="phone" placeholder="(11) 99999-9999" inputmode="numeric" autocomplete="tel" (input)="onPhoneInput($event)" class="w-full px-4 py-2.5 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800" />
+              @if (customerForm.controls.phone.invalid && customerForm.controls.phone.touched) {
+                <p class="text-xs text-error-600 mt-1">Informe um telefone válido.</p>
+              }
+            </div>
+            <div>
+              <label for="document" class="block text-sm font-medium">CPF</label>
+              <input id="document" type="text" formControlName="document" placeholder="000.000.000-00" inputmode="numeric" autocomplete="off" (input)="onCpfInput($event)" class="w-full px-4 py-2.5 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800" />
+              @if (customerForm.controls.document.invalid && customerForm.controls.document.touched) {
+                <p class="text-xs text-error-600 mt-1">CPF inválido.</p>
+              }
+            </div>
+          </div>
+        </section>
+
+        <!-- Endereço -->
+        <section [formGroup]="addressForm" class="space-y-5">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="cep" class="block text-sm font-medium">CEP</label>
+              <div class="flex gap-2">
+                <input id="cep" type="text" formControlName="cep" placeholder="00000-000" inputmode="numeric" autocomplete="postal-code" (input)="onCepInput($event)" class="w-full px-4 py-2.5 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800" />
+                <button type="button" class="btn btn-outline" (click)="findCep()" [disabled]="cepLoading()">{{ cepLoading() ? 'Buscando…' : 'Buscar' }}</button>
+              </div>
+              @if (cepError()) { <p class="text-xs text-error-600 mt-1">{{ cepError() }}</p> }
+            </div>
+            <div class="md:col-span-2">
+              <label for="street" class="block text-sm font-medium">Endereço</label>
+              <input id="street" type="text" formControlName="street" class="w-full px-4 py-2.5 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label for="number" class="block text-sm font-medium">Número</label>
+              <input id="number" type="text" formControlName="number" class="w-full px-4 py-2.5 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800" />
+            </div>
+            <div class="md:col-span-3">
+              <label for="complement" class="block text-sm font-medium">Complemento</label>
+              <input id="complement" type="text" formControlName="complement" class="w-full px-4 py-2.5 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="neighborhood" class="block text-sm font-medium">Bairro</label>
+              <input id="neighborhood" type="text" formControlName="neighborhood" class="w-full px-4 py-2.5 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800" />
+            </div>
+            <div>
+              <label for="city" class="block text-sm font-medium">Cidade</label>
+              <input id="city" type="text" formControlName="city" class="w-full px-4 py-2.5 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800" />
+            </div>
+            <div>
+              <label for="state" class="block text-sm font-medium">UF</label>
+              <input id="state" type="text" maxlength="2" formControlName="state" (input)="onStateInput($event)" class="w-full px-4 py-2.5 rounded-lg border border-dark-200 dark:border-dark-700 bg-white dark:bg-dark-800 uppercase" />
+            </div>
+          </div>
+        </section>
+
+        <div class="flex items-center justify-between pt-2">
+          <a routerLink="/carrinho" class="btn btn-outline">Voltar ao carrinho</a>
+          <button type="submit" class="btn btn-primary inline-flex items-center gap-2" [disabled]="!canProceed()">
+            Continuar para pagamento
+            <lucide-icon [img]="icons.ArrowRight" class="w-4 h-4"></lucide-icon>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Resumo -->
+    <aside class="bg-white dark:bg-dark-900 rounded-xl shadow-sm p-6 h-fit">
+      <h2 class="text-lg font-semibold mb-4">Resumo</h2>
+      <div class="space-y-3 text-sm">
+        <div class="flex justify-between">
+          <span class="text-dark-600 dark:text-dark-400">Produtos ({{ cart.count() }})</span>
+          <span class="font-medium">{{ formatPrice(cart.subtotal()) }}</span>
+        </div>
+        @if (cart.discount() > 0) {
+          <div class="flex justify-between text-success-700 dark:text-success-400">
+            <span>Desconto</span>
+            <span>-{{ formatPrice(cart.discount()) }}</span>
+          </div>
+        }
+        <div class="flex justify-between">
+          <span class="text-dark-600 dark:text-dark-400">Frete</span>
+          <span class="font-medium">{{ cart.shipping() === 0 ? 'Grátis' : formatPrice(cart.shipping()) }}</span>
+        </div>
+        <div class="divider my-3"></div>
+        <div class="flex justify-between text-base">
+          <span class="font-semibold">Total</span>
+          <span class="font-bold">{{ formatPrice(cart.total()) }}</span>
+        </div>
+      </div>
+      <a routerLink="/carrinho" class="text-sm text-primary-600 hover:text-primary-700 inline-block mt-3">Editar carrinho</a>
+    </aside>
+  </div>
+</section>

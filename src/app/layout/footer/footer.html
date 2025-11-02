@@ -22,7 +22,7 @@
                   type="email"
                   [formControl]="newsletterEmail"
                   placeholder="seu@email.com"
-                  class="w-full pl-12 pr-4 py-4 rounded-xl bg-white text-dark-900 placeholder:text-dark-400 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all"
+                  class="w-full pl-14 pr-4 py-4 rounded-xl bg-white text-dark-900 placeholder:text-dark-400 focus:outline-none focus:ring-4 focus:ring-white/30 transition-all"
                   [class.border-2]="newsletterEmail.invalid && newsletterEmail.touched"
                   [class.border-error-500]="newsletterEmail.invalid && newsletterEmail.touched"
                   aria-label="Email para newsletter"
@@ -30,7 +30,7 @@
                 />
                 <lucide-icon
                   [img]="icons.Mail"
-                  class="absolute left-4 top-1/2 -translate-y-1/2 text-dark-400 w-5 h-5"
+                  class="absolute left-4 top-1/2 -translate-y-1/2 text-dark-400 w-5 h-5 pointer-events-none"
                   aria-hidden="true"
                 >
                 </lucide-icon>
@@ -100,7 +100,7 @@
           <!-- Contact Info -->
           <div class="space-y-3">
             <a
-              href="tel:+551140004000"
+              href="tel:+553440028922"
               class="flex items-center gap-3 text-dark-300 hover:text-primary-400 transition-colors group"
             >
               <lucide-icon
@@ -108,7 +108,7 @@
                 class="w-5 h-5 group-hover:scale-110 transition-transform"
                 aria-hidden="true"
               ></lucide-icon>
-              <span class="text-sm">(11) 4000-4000</span>
+              <span class="text-sm">(34) 4002-8922</span>
             </a>
             <a
               href="mailto:contato@wagsales.com"
@@ -127,7 +127,7 @@
                 class="w-5 h-5 mt-0.5 flex-shrink-0"
                 aria-hidden="true"
               ></lucide-icon>
-              <span class="text-sm">São Paulo, SP<br />Brasil</span>
+              <span class="text-sm">Uberlândia, MG<br />Brasil</span>
             </div>
           </div>
         </div>
@@ -236,9 +236,14 @@
         <div class="text-center">
           <h4 class="font-semibold text-white mb-4 text-sm">Pagamento</h4>
           <div class="flex items-center justify-center gap-3 flex-wrap">
-            @for (method of paymentMethods; track method.name) {
-              <div class="px-3 py-2 bg-dark-800 rounded-lg text-2xl" [attr.title]="method.name">
-                {{ method.logo }}
+            @for (method of payMethods; track method.name) {
+              <div
+                class="px-3 py-2 bg-dark-800 rounded-lg"
+                [attr.title]="method.name"
+                [attr.aria-label]="method.name"
+                role="img"
+              >
+                <lucide-icon [img]="method.icon" class="w-6 h-6 text-dark-200" aria-hidden="true"></lucide-icon>
               </div>
             }
           </div>

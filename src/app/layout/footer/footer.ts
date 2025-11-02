@@ -14,6 +14,8 @@ import {
   Youtube,
   Send,
   CreditCard,
+  QrCode,
+  Receipt,
   Shield,
   Truck,
   Clock,
@@ -49,6 +51,13 @@ export class Footer {
   public newsletterMessage = signal('');
 
   public currentYear = new Date().getFullYear();
+
+  // Métodos de pagamento usando ícones (Pix/Cartão/Boleto)
+  public payMethods = [
+    { name: 'Cartão (crédito/débito)', icon: CreditCard },
+    { name: 'Pix', icon: QrCode },
+    { name: 'Boleto', icon: Receipt },
+  ];
 
   public footerLinks = {
     institucional: [

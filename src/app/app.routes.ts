@@ -47,8 +47,12 @@ export const routes: Routes = [
     title: 'Favoritos - WagSales',
   },
   {
+    path: 'checkout',
+    loadComponent: () => import('./features/checkout/checkout.page').then((m) => m.CheckoutPage),
+    title: 'Checkout - WagSales',
+  },
+  {
     path: '**',
     redirectTo: '',
   },
 ];
-

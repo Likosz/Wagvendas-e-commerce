@@ -83,5 +83,10 @@ export class CartPage implements OnInit {
       this.couponInput.set(code.toUpperCase());
       this.applyCoupon();
     }
+    // Se já houver cupom aplicado, refletir no input ao entrar na página
+    const active = this.activeCoupon();
+    if (active && !code) {
+      this.couponInput.set(active.code.toUpperCase());
+    }
   }
 }

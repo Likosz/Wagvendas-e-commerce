@@ -1,0 +1,9 @@
+:host {
+  display: block;
+}
+
+input[aria-invalid="true"] {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+

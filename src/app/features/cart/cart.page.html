@@ -182,15 +182,16 @@
             </div>
           </div>
 
-          <button
-            type="button"
-            class="btn btn-primary w-full mt-6"
-            aria-label="Prosseguir para o checkout"
-            disabled
-            title="Checkout será implementado nos commits 12/13"
-          >
-            Ir para o checkout
-          </button>
+          <div class="pt-4">
+            <button
+              type="button"
+              routerLink="/checkout"
+              class="btn btn-primary w-full text-center"
+              aria-label="Prosseguir para o checkout"
+            >
+              Ir para o checkout
+            </button>
+          </div>
 
           @if (discount() > 0) {
             <p class="text-xs text-success-700 dark:text-success-400 mt-2">
