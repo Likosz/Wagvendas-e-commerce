@@ -1,7 +1,8 @@
-import { Component, signal, computed, HostListener } from '@angular/core';
+import { Component, signal, computed, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ThemeService } from '../../core/services/theme.service';
+import { WishlistService } from '../../core/services/wishlist.service';
 
 import {
   LucideAngularModule,
@@ -23,6 +24,8 @@ import {
   styleUrl: './header.scss',
 })
 export class Header {
+  private wishlistService = inject(WishlistService);
+
   readonly icons = {
     Search,
     ShoppingCart,
@@ -38,12 +41,16 @@ export class Header {
 
   public searchOpen = signal(false);
 
-  // Quantidade de itens no carrinho (mockado por enquanto)
+  // Quantidade de itens no carrinho
   public cartItemCount = signal(3);
+
+  public wishlistCount = computed(() => this.wishlistService.count());
 
   public isScrolled = signal(false);
 
   public hasCartItems = computed(() => this.cartItemCount() > 0);
+
+  public hasWishlistItems = computed(() => this.wishlistCount() > 0);
 
   public navLinks = [
     { label: 'Início', path: '/', exact: true },

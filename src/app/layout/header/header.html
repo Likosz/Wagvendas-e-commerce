@@ -144,15 +144,29 @@
           <button
             type="button"
             class="hidden md:flex btn-ghost p-2.5 rounded-lg relative group"
-            aria-label="Minha lista de desejos"
+            routerLink="/favoritos"
+            [attr.aria-label]="
+              'Minha lista de favoritos - ' +
+              wishlistCount() +
+              (wishlistCount() === 1 ? ' item' : ' itens')
+            "
           >
             <lucide-icon
               [img]="icons.Heart"
+              [class.fill-error-500]="hasWishlistItems()"
+              [class.text-error-500]="hasWishlistItems()"
               class="w-5 h-5 group-hover:text-error-500 group-hover:fill-error-500 transition-all duration-200"
               aria-hidden="true"
             >
             </lucide-icon>
-            <span class="absolute -top-1 -right-1 w-2 h-2 bg-error-500 rounded-full"></span>
+            @if (hasWishlistItems()) {
+              <span
+                class="absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1.5 bg-error-500 text-white text-xs font-bold rounded-full flex items-center justify-center"
+                aria-hidden="true"
+              >
+                {{ wishlistCount() }}
+              </span>
+            }
           </button>
 
           <!-- Cart -->

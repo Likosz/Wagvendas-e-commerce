@@ -11,6 +11,7 @@ import {
   Star,
 } from 'lucide-angular';
 import { ProductService } from '../../core/services/product.service';
+import { WishlistService } from '../../core/services/wishlist.service';
 import { Product } from '../../core/interfaces/product.interface';
 import { ProductCard } from '../../shared/components/product-card/product-card';
 
@@ -25,6 +26,7 @@ export class ProductPage implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private productService = inject(ProductService);
+  private wishlistService = inject(WishlistService);
 
   readonly icons = {
     Heart,
@@ -48,7 +50,11 @@ export class ProductPage implements OnInit {
 
   public quantity = signal<number>(1);
 
-  public isInWishlist = signal<boolean>(false);
+  public isInWishlist = computed(() => {
+    const prod = this.product();
+    if (!prod) return false;
+    return this.wishlistService.isInWishlist(prod.id);
+  });
 
   public activeTab = signal<'description' | 'specs' | 'reviews'>('description');
 
@@ -212,9 +218,11 @@ export class ProductPage implements OnInit {
   }
 
   toggleWishlist(): void {
-    this.isInWishlist.set(!this.isInWishlist());
-    console.log('Wishlist toggled:', this.isInWishlist());
-    // TODO: Implementar serviço de wishlist
+    const prod = this.product();
+    if (!prod) return;
+
+    const added = this.wishlistService.toggleWishlist(prod.id);
+    console.log(added ? 'Adicionado aos favoritos' : 'Removido dos favoritos');
   }
 
   share(): void {
@@ -236,7 +244,6 @@ export class ProductPage implements OnInit {
     }
   }
 
-  // Mudar tab
   setActiveTab(tab: 'description' | 'specs' | 'reviews'): void {
     this.activeTab.set(tab);
   }

@@ -43,7 +43,7 @@ export const routes: Routes = [
   },
   {
     path: 'favoritos',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar página de favoritos
+    loadComponent: () => import('./features/wishlist/wishlist.page').then((m) => m.WishlistPage),
     title: 'Favoritos - WagSales',
   },
   {

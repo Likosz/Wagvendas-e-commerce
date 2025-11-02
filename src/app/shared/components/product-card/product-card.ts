@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  signal,
+  computed,
+  inject,
+  effect,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {
@@ -11,6 +20,7 @@ import {
   Truck,
 } from 'lucide-angular';
 import { Product } from '../../../core/interfaces/product.interface';
+import { WishlistService } from '../../../core/services/wishlist.service';
 
 @Component({
   selector: 'app-product-card',
@@ -20,6 +30,8 @@ import { Product } from '../../../core/interfaces/product.interface';
   styleUrl: './product-card.scss',
 })
 export class ProductCard {
+  private wishlistService = inject(WishlistService);
+
   @Input() product?: Product;
   @Input() loading: boolean = false;
 
@@ -36,10 +48,13 @@ export class ProductCard {
     Truck,
   };
 
-  public isInWishlist = signal<boolean>(false);
+  public isInWishlist = computed(() => {
+    if (!this.product) return false;
+    return this.wishlistService.isInWishlist(this.product.id);
+  });
+
   public isAddingToCart = signal<boolean>(false);
 
-  // Gera array de estrelas para rating
   getStarArray(): number[] {
     return Array.from({ length: 5 }, (_, i) => i + 1);
   }
@@ -73,7 +88,8 @@ export class ProductCard {
 
     if (!this.product) return;
 
-    this.isInWishlist.set(!this.isInWishlist());
+    this.wishlistService.toggleWishlist(this.product.id);
+
     this.toggleWishlist.emit(this.product);
   }
 
@@ -86,7 +102,6 @@ export class ProductCard {
     this.quickView.emit(this.product);
   }
 
-  // Calcula porcentagem de desconto
   getDiscountPercentage(): number {
     if (!this.product || !this.product.originalPrice) return 0;
     return Math.round(

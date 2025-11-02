@@ -49,6 +49,10 @@ export class ProductService {
     this.loadProducts();
   }
 
+  public getAllProducts(): Product[] {
+    return this.allProducts();
+  }
+
   private loadProducts(): void {
     this.allProducts.set(PRODUCTS_MOCK);
     this.filteredProducts.set(PRODUCTS_MOCK);
