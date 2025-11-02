@@ -1,4 +1,15 @@
-import { Component, Input, Output, EventEmitter, signal, computed, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  signal,
+  computed,
+  inject,
+  PLATFORM_ID,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import {
   LucideAngularModule,
@@ -22,9 +33,11 @@ type ViewMode = 'grid' | 'list';
   imports: [CommonModule, LucideAngularModule, ProductCard],
   templateUrl: './product-grid.html',
   styleUrl: './product-grid.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductGrid {
   private productService = inject(ProductService);
+  private platformId = inject(PLATFORM_ID);
 
   @Input() products: Product[] = [];
   @Input() loading: boolean = false;
@@ -107,14 +120,15 @@ export class ProductGrid {
   // View mode toggle
   setViewMode(mode: ViewMode): void {
     this.viewMode.set(mode);
-    try {
-      localStorage.setItem('productViewMode', mode);
-    } catch (error) {
-      console.warn('Failed to save view mode to localStorage:', error);
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        localStorage.setItem('productViewMode', mode);
+      } catch (error) {
+        console.warn('Failed to save view mode to localStorage:', error);
+      }
     }
   }
 
-  // Sort change
   onSortChange(sortOption: ProductSortOption): void {
     this.selectedSort.set(sortOption);
     this.sortChange.emit(sortOption);
@@ -174,13 +188,15 @@ export class ProductGrid {
 
   // Load saved view mode
   ngOnInit(): void {
-    try {
-      const savedMode = localStorage.getItem('productViewMode') as ViewMode;
-      if (savedMode === 'grid' || savedMode === 'list') {
-        this.viewMode.set(savedMode);
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        const savedMode = localStorage.getItem('productViewMode') as ViewMode;
+        if (savedMode === 'grid' || savedMode === 'list') {
+          this.viewMode.set(savedMode);
+        }
+      } catch (error) {
+        console.warn('Failed to load view mode from localStorage:', error);
       }
-    } catch (error) {
-      console.warn('Failed to load view mode from localStorage:', error);
     }
   }
 }

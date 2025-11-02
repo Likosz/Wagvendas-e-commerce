@@ -1,4 +1,5 @@
-import { Injectable, signal, computed, effect } from '@angular/core';
+import { Injectable, signal, computed, effect, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Product } from '../interfaces/product.interface';
 
 // Interface para item da wishlist
@@ -12,6 +13,7 @@ export interface WishlistItem {
 })
 export class WishlistService {
   private readonly STORAGE_KEY = 'wagsales_wishlist';
+  private platformId = inject(PLATFORM_ID);
 
   // Signal privado para armazenar IDs dos produtos
   private wishlistIds = signal<Set<string>>(new Set());
@@ -62,6 +64,7 @@ export class WishlistService {
   }
 
   private loadFromStorage(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY);
       if (stored) {
@@ -75,6 +78,7 @@ export class WishlistService {
   }
 
   private saveToStorage(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     try {
       const ids = Array.from(this.wishlistIds());
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(ids));

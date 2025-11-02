@@ -1,0 +1,168 @@
+<section class="py-16 md:py-20 bg-dark-50 dark:bg-dark-950">
+  <div class="container-custom">
+    <h1 class="text-3xl md:text-4xl font-bold text-dark-900 dark:text-white mb-6">Carrinho</h1>
+
+    @if (count() === 0) {
+      <div
+        class="bg-white dark:bg-dark-900 rounded-xl shadow-sm p-10 text-center flex flex-col items-center gap-4"
+        role="status"
+        aria-live="polite"
+      >
+        <lucide-icon [img]="icons.ShoppingCart" [size]="48" class="text-dark-400"></lucide-icon>
+        <h2 class="text-xl font-semibold text-dark-900 dark:text-white">Seu carrinho está vazio</h2>
+        <p class="text-dark-600 dark:text-dark-400">Que tal explorar nossos produtos?</p>
+        <a
+          routerLink="/produtos"
+          class="btn btn-primary"
+          aria-label="Ver produtos e começar a comprar"
+        >
+          Ver produtos
+        </a>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2 space-y-4">
+          @for (entry of entries(); track entry.key) {
+            <article
+              class="bg-white dark:bg-dark-900 rounded-xl shadow-sm p-4 md:p-6 flex gap-4 items-start"
+              aria-label="Item do carrinho"
+            >
+              <img
+                [src]="entry.product.thumbnail || entry.product.images[0]"
+                [alt]="entry.product.name"
+                class="w-24 h-24 object-cover rounded-lg border border-dark-200 dark:border-dark-800"
+                loading="lazy"
+                width="96"
+                height="96"
+              />
+
+              <div class="flex-1 min-w-0">
+                <h3
+                  class="font-semibold text-dark-900 dark:text-white truncate"
+                  [title]="entry.product.name"
+                >
+                  {{ entry.product.name }}
+                </h3>
+                <p class="text-sm text-dark-500 dark:text-dark-400">
+                  {{ entry.product.brand }} • {{ entry.product.categoryName }}
+                </p>
+
+                @if (entry.variantSelections) {
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    @for (vk of (keys(entry.variantSelections)); track vk) {
+                      <span
+                        class="badge bg-dark-100 dark:bg-dark-800 text-dark-700 dark:text-dark-200"
+                        >{{ vk }}: {{ entry.variantSelections![vk] }}</span
+                      >
+                    }
+                  </div>
+                }
+
+                <div class="mt-4 flex flex-wrap items-center gap-4">
+                  <div class="inline-flex items-center border border-dark-200 dark:border-dark-700 rounded-lg">
+                    <button
+                      type="button"
+                      class="px-3 py-2 hover:bg-dark-50 dark:hover:bg-dark-800 rounded-l-lg"
+                      (click)="decrease(entry.key, entry.quantity)"
+                      aria-label="Diminuir quantidade"
+                    >
+                      <lucide-icon [img]="icons.Minus" [size]="18"></lucide-icon>
+                    </button>
+                    <span class="px-4 py-2 text-dark-900 dark:text-white" aria-live="polite">{{
+                      entry.quantity
+                    }}</span>
+                    <button
+                      type="button"
+                      class="px-3 py-2 hover:bg-dark-50 dark:hover:bg-dark-800 rounded-r-lg"
+                      (click)="increase(entry.key, entry.quantity)"
+                      aria-label="Aumentar quantidade"
+                    >
+                      <lucide-icon [img]="icons.Plus" [size]="18"></lucide-icon>
+                    </button>
+                  </div>
+
+                  <p class="font-semibold text-dark-900 dark:text-white">
+                    {{ formatPrice(entry.unitPrice) }}
+                    <span class="text-sm text-dark-500 dark:text-dark-400"> cada </span>
+                  </p>
+
+                  <button
+                    type="button"
+                    class="text-error-600 hover:text-error-700 flex items-center gap-1"
+                    (click)="remove(entry.key)"
+                    aria-label="Remover item do carrinho"
+                  >
+                    <lucide-icon [img]="icons.Trash2" [size]="18"></lucide-icon>
+                    Remover
+                  </button>
+                </div>
+              </div>
+
+              <div class="text-right">
+                <p class="text-sm text-dark-500 dark:text-dark-400">Total</p>
+                <p class="text-lg font-semibold text-dark-900 dark:text-white">
+                  {{ formatPrice(entry.total) }}
+                </p>
+              </div>
+            </article>
+          }
+
+          <div class="flex justify-between items-center pt-2">
+            <a routerLink="/produtos" class="text-primary-600 hover:text-primary-700"
+              >Continuar comprando</a
+            >
+            <button type="button" class="text-sm text-dark-500 hover:text-dark-700" (click)="clear()">
+              Esvaziar carrinho
+            </button>
+          </div>
+        </div>
+
+        <aside
+          class="lg:col-span-1 bg-white dark:bg-dark-900 rounded-xl shadow-sm p-6 h-fit"
+          aria-label="Resumo do pedido"
+        >
+          <h2 class="text-lg font-semibold text-dark-900 dark:text-white mb-4">Resumo</h2>
+
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between">
+              <span class="text-dark-600 dark:text-dark-400">Subtotal</span>
+              <span class="font-medium text-dark-900 dark:text-white">
+                {{ formatPrice(subtotal()) }}
+              </span>
+            </div>
+
+            <div class="flex justify-between">
+              <span class="text-dark-600 dark:text-dark-400">Frete</span>
+              <span class="font-medium text-dark-900 dark:text-white">
+                {{ shipping() === 0 ? 'Grátis' : formatPrice(shipping()) }}
+              </span>
+            </div>
+
+            <div class="divider my-3"></div>
+
+            <div class="flex justify-between text-base">
+              <span class="font-semibold text-dark-900 dark:text-white">Total</span>
+              <span class="font-bold text-dark-900 dark:text-white">
+                {{ formatPrice(total()) }}
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-primary w-full mt-6"
+            aria-label="Prosseguir para o checkout"
+            disabled
+            title="Checkout será implementado nos commits 12/13"
+          >
+            Ir para o checkout
+          </button>
+
+          <p class="text-xs text-dark-500 dark:text-dark-400 mt-2">
+            Frete grátis em pedidos a partir de R$ 199,00.
+          </p>
+        </aside>
+      </div>
+    }
+  </div>
+</section>

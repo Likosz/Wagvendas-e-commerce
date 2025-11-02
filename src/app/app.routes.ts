@@ -4,11 +4,11 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage),
-    title: 'WagSales - Sua loja online de confiança',
+    title: 'WagSales - Sua loja online',
   },
   {
     path: 'produtos',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar página de produtos
+    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de produtos
     title: 'Produtos - WagSales',
   },
   {
@@ -18,27 +18,27 @@ export const routes: Routes = [
   },
   {
     path: 'ofertas',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar página de ofertas
+    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de ofertas
     title: 'Ofertas - WagSales',
   },
   {
     path: 'categorias',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar página de categorias
+    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de categorias
     title: 'Categorias - WagSales',
   },
   {
     path: 'contato',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar página de contato
+    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de contato
     title: 'Contato - WagSales',
   },
   {
     path: 'carrinho',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar página de carrinho
+    loadComponent: () => import('./features/cart/cart.page').then((m) => m.CartPage),
     title: 'Carrinho - WagSales',
   },
   {
     path: 'perfil',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar página de perfil
+    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de perfil
     title: 'Meu Perfil - WagSales',
   },
   {
@@ -51,3 +51,4 @@ export const routes: Routes = [
     redirectTo: '',
   },
 ];
+

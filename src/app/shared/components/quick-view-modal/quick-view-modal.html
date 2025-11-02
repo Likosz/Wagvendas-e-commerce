@@ -1,7 +1,7 @@
 <!-- Modal Overlay -->
 @if (isOpen && product) {
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/80 backdrop-blur-sm animate-fade-in"
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/70 animate-fade-in"
     role="dialog"
     aria-modal="true"
     [attr.aria-labelledby]="'quick-view-title-' + product.id"
@@ -11,7 +11,7 @@
   >
     <!-- Modal Content -->
     <div
-      class="relative w-full max-w-5xl bg-white dark:bg-dark-900 rounded-2xl shadow-2xl overflow-hidden animate-scale-in max-h-[90vh] overflow-y-auto"
+      class="relative w-full max-w-5xl bg-white dark:bg-dark-900 rounded-2xl shadow-2xl overflow-hidden animate-scale-in max-h-[90vh] overflow-y-auto modal-content"
       (click)="$event.stopPropagation()"
     >
       <!-- Close Button -->
@@ -34,7 +34,7 @@
           <div
             class="relative aspect-square bg-dark-100 dark:bg-dark-800 rounded-xl overflow-hidden"
           >
-            <img [src]="selectedImage()" [alt]="product.name" class="w-full h-full object-cover" />
+            <img [src]="selectedImage()" [alt]="product.name" class="w-full h-full object-cover" decoding="async" fetchpriority="high"/>
 
             <!-- Badges -->
             <div class="absolute top-4 left-4 flex flex-col gap-2">
@@ -80,6 +80,7 @@
                     [src]="image"
                     [alt]="product.name + ' - Imagem ' + ($index + 1)"
                     class="w-full h-full object-cover"
+                    loading="lazy" decoding="async"
                   />
                 </button>
               }

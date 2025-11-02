@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
@@ -12,6 +12,7 @@ import {
 } from 'lucide-angular';
 import { ProductService } from '../../core/services/product.service';
 import { WishlistService } from '../../core/services/wishlist.service';
+import { CartService } from '../../core/services/cart.service';
 import { Product } from '../../core/interfaces/product.interface';
 import { ProductCard } from '../../shared/components/product-card/product-card';
 
@@ -21,12 +22,14 @@ import { ProductCard } from '../../shared/components/product-card/product-card';
   imports: [CommonModule, RouterLink, LucideAngularModule, ProductCard],
   templateUrl: './product.page.html',
   styleUrl: './product.page.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductPage implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private productService = inject(ProductService);
   private wishlistService = inject(WishlistService);
+  private cartService = inject(CartService);
 
   readonly icons = {
     Heart,
@@ -85,18 +88,14 @@ export class ProductPage implements OnInit {
   public finalPrice = computed(() => {
     const prod = this.product();
     if (!prod) return 0;
-
-    // Adicionar modificadores de preço das variantes
     let price = prod.price;
     const variants = prod.variants || [];
-
     this.selectedVariants().forEach((variantValue, variantType) => {
       const variant = variants.find((v) => v.type === variantType && v.value === variantValue);
       if (variant?.priceModifier) {
         price += variant.priceModifier;
       }
     });
-
     return price;
   });
 
@@ -104,17 +103,14 @@ export class ProductPage implements OnInit {
   public availableStock = computed(() => {
     const prod = this.product();
     if (!prod) return 0;
-
     let stock = prod.stock;
     const variants = prod.variants || [];
-
     this.selectedVariants().forEach((variantValue, variantType) => {
       const variant = variants.find((v) => v.type === variantType && v.value === variantValue);
       if (variant?.stockModifier) {
         stock += variant.stockModifier;
       }
     });
-
     return Math.max(0, stock);
   });
 
@@ -126,45 +122,20 @@ export class ProductPage implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const slug = params.get('slug');
-      if (slug) {
-        this.loadProduct(slug);
+      if (!slug) {
+        this.notFound.set(true);
+        this.loading.set(false);
+        return;
+      }
+      const product = this.productService.getProductBySlug(slug);
+      if (product) {
+        this.product.set(product);
+        this.loading.set(false);
       } else {
         this.notFound.set(true);
         this.loading.set(false);
       }
     });
-  }
-
-  private loadProduct(slug: string): void {
-    this.loading.set(true);
-    this.notFound.set(false);
-
-    setTimeout(() => {
-      const product = this.productService.getProductBySlug(slug);
-
-      if (product) {
-        this.product.set(product);
-        this.loading.set(false);
-
-        // Inicializar variantes selecionadas com primeira opção
-        if (product.variants && product.variants.length > 0) {
-          const variantsByType = new Map<string, string>();
-          const types = new Set(product.variants.map((v) => v.type));
-
-          types.forEach((type) => {
-            const firstVariant = product.variants!.find((v) => v.type === type);
-            if (firstVariant) {
-              variantsByType.set(type, firstVariant.value);
-            }
-          });
-
-          this.selectedVariants.set(variantsByType);
-        }
-      } else {
-        this.notFound.set(true);
-        this.loading.set(false);
-      }
-    }, 500);
   }
 
   selectImage(index: number): void {
@@ -201,15 +172,9 @@ export class ProductPage implements OnInit {
   addToCart(): void {
     const prod = this.product();
     if (!prod) return;
-
-    console.log('Adicionar ao carrinho:', {
-      product: prod,
-      quantity: this.quantity(),
-      variants: Array.from(this.selectedVariants().entries()),
-      finalPrice: this.finalPrice(),
-    });
-
-    // TODO: Implementar serviço de carrinho
+    const variantSelections: Record<string, string> = {};
+    this.selectedVariants().forEach((value, key) => (variantSelections[key] = value));
+    this.cartService.add(prod, this.quantity(), variantSelections);
   }
 
   buyNow(): void {
@@ -220,27 +185,18 @@ export class ProductPage implements OnInit {
   toggleWishlist(): void {
     const prod = this.product();
     if (!prod) return;
-
-    const added = this.wishlistService.toggleWishlist(prod.id);
-    console.log(added ? 'Adicionado aos favoritos' : 'Removido dos favoritos');
+    this.wishlistService.toggleWishlist(prod.id);
   }
 
   share(): void {
     const prod = this.product();
     if (!prod) return;
-
     if (navigator.share) {
       navigator
-        .share({
-          title: prod.name,
-          text: prod.shortDescription || prod.description,
-          url: window.location.href,
-        })
-        .catch((error) => console.log('Erro ao compartilhar:', error));
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      console.log('Link copiado!');
-      // TODO: Mostrar toast
+        .share({ title: prod.name, text: prod.shortDescription || prod.description, url: window.location.href })
+        .catch(() => {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href).catch(() => {});
     }
   }
 
@@ -252,7 +208,6 @@ export class ProductPage implements OnInit {
   getStarType(index: number): 'full' | 'half' | 'empty' {
     const prod = this.product();
     if (!prod) return 'empty';
-
     const rating = prod.rating;
     if (index <= Math.floor(rating)) return 'full';
     if (index === Math.ceil(rating) && rating % 1 !== 0) return 'half';
@@ -260,10 +215,7 @@ export class ProductPage implements OnInit {
   }
 
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL',
-    }).format(price);
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
   }
 
   getVariantTypes(): string[] {
@@ -288,3 +240,4 @@ export class ProductPage implements OnInit {
     return translations[type] || type;
   }
 }
+

@@ -104,3 +104,10 @@
 :host-context(body.modal-open) {
   overflow: hidden;
 }
+
+.modal-content {
+  content-visibility: auto;
+  contain: content;
+  contain-intrinsic-size: 800px 800px;
+  will-change: transform, opacity;
+}
