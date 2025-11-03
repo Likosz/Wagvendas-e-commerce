@@ -38,7 +38,7 @@
         <div class="absolute top-3 left-3 right-3 flex flex-wrap gap-2 z-10">
           @if (product.discount && product.discount > 0) {
             <span
-              class="inline-flex items-center gap-1 px-2.5 py-1 bg-error-500 text-white text-xs font-bold rounded-full shadow-lg"
+              class="inline-flex items-center gap-1 px-2.5 py-1 bg-transparent text-amber-400 border border-amber-400 dark:text-amber-300 dark:border-amber-300 text-xs font-bold rounded-full shadow-lg"
               aria-label="Desconto de {{ getDiscountPercentage() }} por cento"
             >
               <lucide-icon [img]="icons.TrendingUp" [size]="14"></lucide-icon>
@@ -48,7 +48,7 @@
 
           @if (product.isNew) {
             <span
-              class="px-2.5 py-1 bg-success-500 text-white text-xs font-bold rounded-full shadow-lg"
+              class="px-2.5 py-1 bg-transparent text-primary-300 border border-primary-300 text-xs font-bold rounded-full shadow-lg"
               aria-label="Produto novo"
             >
               NOVO
@@ -57,7 +57,7 @@
 
           @if (product.freeShipping) {
             <span
-              class="inline-flex items-center gap-1 px-2.5 py-1 bg-accent-500 text-white text-xs font-bold rounded-full shadow-lg"
+              class="inline-flex items-center gap-1 px-2.5 py-1 bg-transparent text-accent-300 border border-accent-300 text-xs font-bold rounded-full shadow-lg"
               aria-label="Frete grátis"
             >
               <lucide-icon [img]="icons.Truck" [size]="14"></lucide-icon>

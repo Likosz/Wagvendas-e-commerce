@@ -63,11 +63,9 @@ export class Header {
   public hasWishlistItems = computed(() => this.wishlistCount() > 0);
 
   public navLinks = [
-    { label: 'Início', path: '/', exact: true },
+    { label: 'Inicio', path: '/', exact: true },
     { label: 'Produtos', path: '/produtos' },
     { label: 'Ofertas', path: '/ofertas', badge: 'Novo' },
-    { label: 'Categorias', path: '/categorias' },
-    { label: 'Contato', path: '/contato' },
   ];
 
   constructor(public themeService: ThemeService) {}
@@ -145,3 +143,6 @@ export class Header {
     event.stopPropagation();
   }
 }
+
+
+

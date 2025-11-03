@@ -1,63 +1,56 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { Hero } from './components/hero/hero';
-import { CategoriesCarousel } from './components/categories-carousel/categories-carousel';
+import { ProductGrid } from '../../shared/components/product-grid/product-grid';
 import { ProductFilters } from '../../shared/components/product-filters/product-filters';
-import { ProductCard } from '../../shared/components/product-card/product-card';
 import { QuickViewModal } from '../../shared/components/quick-view-modal/quick-view-modal';
 import { ProductService } from '../../core/services/product.service';
 import { CartService } from '../../core/services/cart.service';
+import { ActivatedRoute } from '@angular/router';
 import { Product, ProductFilter, ProductSortOption } from '../../core/interfaces/product.interface';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-products-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, Hero, CategoriesCarousel, ProductFilters, QuickViewModal, ProductCard],
-  templateUrl: './home.page.html',
-  styleUrl: './home.page.scss',
+  imports: [CommonModule, ProductGrid, ProductFilters, QuickViewModal],
+  templateUrl: './products.page.html',
+  styleUrl: './products.page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomePage implements OnInit {
+export class ProductsPage implements OnInit {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
+  private route = inject(ActivatedRoute);
 
-  public isFiltersOpen = signal<boolean>(false);
-  public isLoading = signal<boolean>(false);
+  public isFiltersOpen = signal(false);
+  public isLoading = signal(false);
 
   public quickViewProduct = signal<Product | null>(null);
-  public isQuickViewOpen = signal<boolean>(false);
+  public isQuickViewOpen = signal(false);
 
-  // Product data from service (using computed signals)
+  // proxies
   public get paginatedProducts() {
     return this.productService.paginatedProducts();
   }
-
   public get totalProducts() {
     return this.productService.totalProducts();
   }
-
   public get currentPage() {
     return this.productService['currentPage']();
   }
-
   public get totalPages() {
     return this.productService.totalPages();
   }
 
-  // Seções compactas de produtos para a Home
-  public get featured() {
-    return this.productService.featuredProducts();
-  }
-  public get bestsellers() {
-    return this.productService.bestsellerProducts();
-  }
-  public get news() {
-    return this.productService.newProducts();
-  }
-
   ngOnInit(): void {
-    this.isLoading.set(false);
+    this.route.queryParamMap.subscribe((qp) => {
+      const cat = qp.get('cat');
+      const sort = qp.get('sort') as any;
+      const q = qp.get('q');
+
+      if (cat) this.productService.filterProducts({ categories: [cat] });
+      if (q) this.productService.searchProducts(q);
+      if (sort) this.productService.sortProducts(sort);
+    });
   }
 
   onFilterChange(filter: ProductFilter): void {
@@ -65,14 +58,11 @@ export class HomePage implements OnInit {
     this.productService.filterProducts(filter);
     this.isLoading.set(false);
   }
-
-  onSortChange(sortOption: ProductSortOption): void {
+  onSortChange(sort: ProductSortOption): void {
     this.isLoading.set(true);
-    this.productService.sortProducts(sortOption);
+    this.productService.sortProducts(sort);
     this.isLoading.set(false);
   }
-
-  // Pagination
   onPageChange(page: number): void {
     this.isLoading.set(true);
     this.productService.setPage(page);
@@ -82,35 +72,25 @@ export class HomePage implements OnInit {
   onAddToCart(product: Product): void {
     this.cartService.add(product, 1);
   }
-
   onToggleWishlist(product: Product): void {
     console.log('Toggle wishlist:', product);
-    // TODO: Implement wishlist service
   }
-
   onQuickView(product: Product): void {
     this.quickViewProduct.set(product);
     this.isQuickViewOpen.set(true);
   }
-
-  // Quick View Modal handlers
   closeQuickView(): void {
     this.isQuickViewOpen.set(false);
-    setTimeout(() => {
-      this.quickViewProduct.set(null);
-    }, 300);
+    setTimeout(() => this.quickViewProduct.set(null), 300);
   }
-
   onQuickViewAddToCart(data: { product: Product; quantity: number }): void {
     this.cartService.add(data.product, data.quantity);
     this.closeQuickView();
   }
 
-  // Mobile filters
   openFilters(): void {
     this.isFiltersOpen.set(true);
   }
-
   closeFilters(): void {
     this.isFiltersOpen.set(false);
   }

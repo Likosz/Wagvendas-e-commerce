@@ -30,10 +30,10 @@ html {
 /* VARIÁVEIS CSS CUSTOMIZADAS */
 :root {
   /* Cores principais */
-  --color-primary: #0ea5e9;
-  --color-primary-dark: #0284c7;
-  --color-secondary: #d946ef;
-  --color-accent: #f97316;
+  --color-primary: #f97316;
+  --color-primary-dark: #ea580c;
+  --color-secondary: #fb923c;
+  --color-accent: #10b981;
 
   /* Background & Surfaces */
   --bg-primary: #ffffff;
@@ -174,6 +174,12 @@ html {
   .btn-primary {
     @apply bg-primary-600 hover:bg-primary-700 text-white;
     @apply focus:ring-primary-500;
+  }
+
+  .btn-outline {
+    @apply border-2 border-primary-600 text-primary-600;
+    @apply hover:bg-primary-600 hover:text-white;
+    @apply focus:ring-primary-500;
     @apply shadow-md hover:shadow-lg;
   }
 
@@ -228,7 +234,6 @@ html {
     @apply bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-200;
   }
 
-  /* Loading Skeleton */
   .skeleton {
     @apply animate-pulse bg-dark-200 dark:bg-dark-700 rounded;
   }
@@ -246,7 +251,6 @@ html {
     @apply border border-dark-200/50 dark:border-dark-700/50;
   }
 
-  /* Gradient Text */
   .gradient-text {
     @apply bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent;
   }

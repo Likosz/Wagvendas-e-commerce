@@ -4,55 +4,50 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage),
-    title: 'WagSales - Sua loja online',
+    title: 'WagVendas - Sua loja online',
   },
   {
     path: 'produtos',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de produtos
-    title: 'Produtos - WagSales',
+    loadComponent: () => import('./features/products/products.page').then((m) => m.ProductsPage),
+    title: 'Produtos - WagVendas',
   },
   {
     path: 'produto/:slug',
     loadComponent: () => import('./features/product/product.page').then((m) => m.ProductPage),
-    title: 'Produto - WagSales',
+    title: 'Produto - WagVendas',
   },
   {
     path: 'ofertas',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de ofertas
-    title: 'Ofertas - WagSales',
-  },
-  {
-    path: 'categorias',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de categorias
-    title: 'Categorias - WagSales',
+    loadComponent: () => import('./features/offers/offers.page').then((m) => m.OffersPage),
+    title: 'Ofertas - WagVendas',
   },
   {
     path: 'contato',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de contato
-    title: 'Contato - WagSales',
+    redirectTo: '',
   },
   {
     path: 'carrinho',
     loadComponent: () => import('./features/cart/cart.page').then((m) => m.CartPage),
-    title: 'Carrinho - WagSales',
+    title: 'Carrinho - WagVendas',
   },
   {
     path: 'perfil',
     loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de perfil
-    title: 'Meu Perfil - WagSales',
+    title: 'Meu Perfil - WagVendas',
   },
   {
     path: 'favoritos',
     loadComponent: () => import('./features/wishlist/wishlist.page').then((m) => m.WishlistPage),
-    title: 'Favoritos - WagSales',
+    title: 'Favoritos - WagVendas',
   },
   {
     path: 'checkout',
     loadComponent: () => import('./features/checkout/checkout.page').then((m) => m.CheckoutPage),
-    title: 'Checkout - WagSales',
+    title: 'Checkout - WagVendas',
   },
   {
     path: '**',
     redirectTo: '',
   },
 ];
+

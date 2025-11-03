@@ -4,48 +4,51 @@
 <!-- Categories Carousel -->
 <app-categories-carousel />
 
-<!-- Products Section -->
-<section class="py-16 md:py-20 bg-dark-50 dark:bg-dark-950">
-  <div class="container-custom">
-    <!-- Section Header -->
-    <div class="mb-8">
-      <h2 class="text-3xl md:text-4xl font-bold text-dark-900 dark:text-white mb-3">
-        Nossos Produtos
-      </h2>
-      <p class="text-base text-dark-600 dark:text-dark-400 max-w-2xl">
-        Explore nossa seleção completa de produtos com os melhores preços e qualidade garantida.
-      </p>
+
+<!-- Seções de produtos (compactas) -->
+<section class="py-12 md:py-16 bg-dark-50 dark:bg-dark-950">
+  <div class="container-custom space-y-12">
+    <!-- Destaques -->
+    <div>
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl md:text-3xl font-semibold">Destaques</h2>
+        <a [routerLink]="['/produtos']" class="text-primary-600 hover:text-primary-700">Ver todos</a>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        @for (p of featured.slice(0, 8); track p.id) {
+          <app-product-card [product]="p" (addToCart)="onAddToCart($event)" (toggleWishlist)="onToggleWishlist($event)" (quickView)="onQuickView($event)" />
+        }
+      </div>
     </div>
 
-    <!-- Products Grid with Filters -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <!-- Filters Sidebar (Desktop) -->
-      <aside class="hidden lg:block lg:col-span-3">
-        <app-product-filters
-          (filterChange)="onFilterChange($event)"
-          (closeDrawer)="closeFilters()"
-        ></app-product-filters>
-      </aside>
+    <!-- Mais vendidos -->
+    <div>
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl md:text-3xl font-semibold">Mais Vendidos</h2>
+        <a [routerLink]="['/produtos']" [queryParams]="{ sort: 'bestseller' }" class="text-primary-600 hover:text-primary-700">Ver todos</a>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        @for (p of bestsellers.slice(0, 8); track p.id) {
+          <app-product-card [product]="p" (addToCart)="onAddToCart($event)" (toggleWishlist)="onToggleWishlist($event)" (quickView)="onQuickView($event)" />
+        }
+      </div>
+    </div>
 
-      <!-- Product Grid -->
-      <div class="lg:col-span-9">
-        <app-product-grid
-          [products]="paginatedProducts"
-          [loading]="isLoading()"
-          [totalProducts]="totalProducts"
-          [currentPage]="currentPage"
-          [totalPages]="totalPages"
-          (pageChange)="onPageChange($event)"
-          (sortChange)="onSortChange($event)"
-          (addToCart)="onAddToCart($event)"
-          (toggleWishlist)="onToggleWishlist($event)"
-          (quickView)="onQuickView($event)"
-          (openFilters)="openFilters()"
-        ></app-product-grid>
+    <!-- Novidades -->
+    <div>
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl md:text-3xl font-semibold">Novidades</h2>
+        <a [routerLink]="['/produtos']" [queryParams]="{ sort: 'newest' }" class="text-primary-600 hover:text-primary-700">Ver todos</a>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        @for (p of news.slice(0, 8); track p.id) {
+          <app-product-card [product]="p" (addToCart)="onAddToCart($event)" (toggleWishlist)="onToggleWishlist($event)" (quickView)="onQuickView($event)" />
+        }
       </div>
     </div>
   </div>
-</section>
+  </section>
+
 
 <!-- Mobile Filters Drawer -->
 @if (isFiltersOpen()) {
