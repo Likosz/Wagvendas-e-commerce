@@ -8,7 +8,7 @@ export const routes: Routes = [
   },
   {
     path: 'produtos',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de produtos
+    loadComponent: () => import('./features/products/products.page').then((m) => m.ProductsPage),
     title: 'Produtos - WagSales',
   },
   {
@@ -18,18 +18,12 @@ export const routes: Routes = [
   },
   {
     path: 'ofertas',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de ofertas
+    loadComponent: () => import('./features/offers/offers.page').then((m) => m.OffersPage),
     title: 'Ofertas - WagSales',
   },
   {
-    path: 'categorias',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de categorias
-    title: 'Categorias - WagSales',
-  },
-  {
     path: 'contato',
-    loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de contato
-    title: 'Contato - WagSales',
+    redirectTo: '',
   },
   {
     path: 'carrinho',

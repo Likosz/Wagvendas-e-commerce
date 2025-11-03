@@ -1,6 +1,6 @@
 <footer class="bg-dark-900 text-dark-50 mt-auto" role="contentinfo">
   <!-- Newsletter Section -->
-  <div class="bg-gradient-to-r from-primary-600 to-secondary-600 py-12">
+  <div class="bg-gradient-to-r from-primary-600 to-primary-700 py-12">
     <div class="container-custom">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <!-- Newsletter Info -->
@@ -243,7 +243,11 @@
                 [attr.aria-label]="method.name"
                 role="img"
               >
-                <lucide-icon [img]="method.icon" class="w-6 h-6 text-dark-200" aria-hidden="true"></lucide-icon>
+                <lucide-icon
+                  [img]="method.icon"
+                  class="w-6 h-6 text-dark-200"
+                  aria-hidden="true"
+                ></lucide-icon>
               </div>
             }
           </div>
@@ -287,7 +291,7 @@
         </p>
 
         <p class="text-center md:text-right text-xs">
-          Desenvolvido com ❤️ usando
+          Desenvolvido usando
           <a
             href="https://angular.dev"
             target="_blank"

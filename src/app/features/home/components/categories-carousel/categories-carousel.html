@@ -15,7 +15,8 @@
       </div>
 
       <a
-        routerLink="/categorias"
+        [routerLink]="['/produtos']"
+        [queryParams]="{ cat: null }"
         class="hidden md:inline-flex items-center gap-2 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-semibold transition-colors group"
         aria-label="Ver todas as categorias"
       >
@@ -39,7 +40,7 @@
         <swiper-slide>
           <a
             [routerLink]="['/produtos']"
-            [queryParams]="{ categoria: category.slug }"
+            [queryParams]="{ cat: category.slug }"
             class="group block relative overflow-hidden rounded-2xl bg-white dark:bg-dark-900 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-primary-500/50"
             [attr.aria-label]="
               'Categoria ' + category.name + ' com ' + category.productCount + ' produtos'
@@ -103,7 +104,8 @@
     <!-- Ver todas link (mobile) -->
     <div class="mt-8 text-center md:hidden">
       <a
-        routerLink="/categorias"
+        [routerLink]="['/produtos']"
+        [queryParams]="{ cat: null }"
         class="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white font-semibold rounded-xl hover:bg-primary-700 transition-colors shadow-lg hover:shadow-xl"
         aria-label="Ver todas as categorias"
       >

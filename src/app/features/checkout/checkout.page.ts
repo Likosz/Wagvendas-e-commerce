@@ -8,7 +8,17 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
-import { LucideAngularModule, ArrowRight, MapPin, User } from 'lucide-angular';
+import {
+  LucideAngularModule,
+  ArrowRight,
+  ArrowLeft,
+  MapPin,
+  User,
+  CreditCard,
+  QrCode,
+  Receipt,
+  CheckCircle2,
+} from 'lucide-angular';
 import { CepService } from '../../core/services/cep.service';
 import { CartService } from '../../core/services/cart.service';
 import { PLATFORM_ID } from '@angular/core';
@@ -31,9 +41,20 @@ export class CheckoutPage {
 
   private readonly STORAGE_KEY = 'wagsales_checkout_v1';
 
-  readonly icons = { ArrowRight, MapPin, User };
+  readonly icons = {
+    ArrowRight,
+    ArrowLeft,
+    MapPin,
+    User,
+    CreditCard,
+    QrCode,
+    Receipt,
+    CheckCircle2,
+  };
 
   public submitting = signal(false);
+  public stage = signal<'details' | 'payment' | 'success'>('details');
+  public orderId = signal<string | null>(null);
   public cepLoading = signal(false);
   public cepError = signal<string | null>(null);
 
@@ -80,6 +101,15 @@ export class CheckoutPage {
     state: ['', [Validators.required, Validators.pattern(/^[A-Z]{2}$/)]],
   });
 
+  paymentForm = this.fb.group({
+    method: ['credit', [Validators.required]], // credit | pix | boleto
+    cardName: [''],
+    cardNumber: [''],
+    cardExp: [''],
+    cardCvv: [''],
+    installments: [1],
+  });
+
   public canProceed = computed(() => this.customerForm.valid && this.addressForm.valid);
 
   async findCep(): Promise<void> {
@@ -113,7 +143,39 @@ export class CheckoutPage {
       this.focusFirstInvalid();
       return;
     }
-    this.router.navigate(['/carrinho']);
+    this.stage.set('payment');
+  }
+
+  backToDetails(): void {
+    this.stage.set('details');
+  }
+
+  placeOrder(): void {
+    if (!this.paymentForm.valid) return;
+    const method = this.paymentForm.controls.method.value;
+    if (method === 'credit') {
+      const nameOk = !!this.paymentForm.controls.cardName.value?.toString().trim();
+      const digits = (this.paymentForm.controls.cardNumber.value || '').replace(/\D/g, '');
+      const numOk = digits.length >= 12; // relaxado para demo
+      const expOk = /^\d{2}\/\d{2}$/.test(this.paymentForm.controls.cardExp.value || '');
+      const cvvOk = /^\d{3,4}$/.test(this.paymentForm.controls.cardCvv.value || '');
+      if (!(nameOk && numOk && expOk && cvvOk)) {
+        this.paymentForm.markAllAsTouched();
+        return;
+      }
+    }
+    this.submitting.set(true);
+    setTimeout(() => {
+      this.submitting.set(false);
+      const id = `WS-${Date.now().toString(36).toUpperCase()}`;
+      this.orderId.set(id);
+      this.stage.set('success');
+      // clear cart
+      try {
+        this.cart.clear();
+      } catch {}
+      this.clearFormStorage();
+    }, 1200);
   }
 
   formatPrice(price: number): string {
@@ -148,6 +210,46 @@ export class CheckoutPage {
     this.addressForm.controls.state.setValue(input.value, { emitEvent: false });
   }
 
+  // Habilita o "Finalizar pedido" somente quando válido
+  canPlaceOrder(): boolean {
+    if (this.submitting()) return false;
+    const method = this.paymentForm.controls.method.value;
+    if (method === 'credit') {
+      const nameOk = !!this.paymentForm.controls.cardName.value?.toString().trim();
+      const digits = (this.paymentForm.controls.cardNumber.value || '').replace(/\D/g, '');
+      const numOk = digits.length >= 12;
+      const expOk = /^\d{2}\/\d{2}$/.test(this.paymentForm.controls.cardExp.value || '');
+      const cvvOk = /^\d{3,4}$/.test(this.paymentForm.controls.cardCvv.value || '');
+      return nameOk && numOk && expOk && cvvOk;
+    }
+    // Pix e Boleto: sem campos adicionais obrigatórios
+    return true;
+  }
+
+  onCardNumberInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const digits = input.value.replace(/\D/g, '').slice(0, 16);
+    const chunks = digits.match(/.{1,4}/g) || [];
+    input.value = chunks.join(' ');
+    this.paymentForm.controls.cardNumber.setValue(input.value, { emitEvent: false });
+  }
+
+  onCardExpInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const digits = input.value.replace(/\D/g, '').slice(0, 4);
+    let out = digits;
+    if (digits.length > 2) out = digits.slice(0, 2) + '/' + digits.slice(2);
+    input.value = out;
+    this.paymentForm.controls.cardExp.setValue(input.value, { emitEvent: false });
+  }
+
+  onCardCvvInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const digits = input.value.replace(/\D/g, '').slice(0, 4);
+    input.value = digits;
+    this.paymentForm.controls.cardCvv.setValue(input.value, { emitEvent: false });
+  }
+
   private formatPhone(digits: string): string {
     if (digits.length <= 2) return `(${digits}`;
     const ddd = digits.slice(0, 2);
@@ -179,6 +281,7 @@ export class CheckoutPage {
     if (isPlatformBrowser(this.platformId)) {
       this.customerForm.valueChanges.pipe(debounceTime(200)).subscribe(() => this.saveForm());
       this.addressForm.valueChanges.pipe(debounceTime(200)).subscribe(() => this.saveForm());
+      this.paymentForm.valueChanges.pipe(debounceTime(200)).subscribe(() => this.saveForm());
     }
   }
 
@@ -188,6 +291,7 @@ export class CheckoutPage {
       const payload = {
         customer: this.customerForm.getRawValue(),
         address: this.addressForm.getRawValue(),
+        payment: this.paymentForm.getRawValue(),
       };
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(payload));
     } catch {}
@@ -201,6 +305,7 @@ export class CheckoutPage {
       const parsed = JSON.parse(raw) as any;
       if (parsed?.customer) this.customerForm.patchValue(parsed.customer, { emitEvent: false });
       if (parsed?.address) this.addressForm.patchValue(parsed.address, { emitEvent: false });
+      if (parsed?.payment) this.paymentForm.patchValue(parsed.payment, { emitEvent: false });
     } catch {}
   }
 
@@ -229,5 +334,12 @@ export class CheckoutPage {
         break;
       }
     }
+  }
+
+  private clearFormStorage(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      localStorage.removeItem(this.STORAGE_KEY);
+    } catch {}
   }
 }
