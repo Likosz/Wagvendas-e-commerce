@@ -4,22 +4,22 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage),
-    title: 'WagSales - Sua loja online',
+    title: 'WagVendas - Sua loja online',
   },
   {
     path: 'produtos',
     loadComponent: () => import('./features/products/products.page').then((m) => m.ProductsPage),
-    title: 'Produtos - WagSales',
+    title: 'Produtos - WagVendas',
   },
   {
     path: 'produto/:slug',
     loadComponent: () => import('./features/product/product.page').then((m) => m.ProductPage),
-    title: 'Produto - WagSales',
+    title: 'Produto - WagVendas',
   },
   {
     path: 'ofertas',
     loadComponent: () => import('./features/offers/offers.page').then((m) => m.OffersPage),
-    title: 'Ofertas - WagSales',
+    title: 'Ofertas - WagVendas',
   },
   {
     path: 'contato',
@@ -28,25 +28,26 @@ export const routes: Routes = [
   {
     path: 'carrinho',
     loadComponent: () => import('./features/cart/cart.page').then((m) => m.CartPage),
-    title: 'Carrinho - WagSales',
+    title: 'Carrinho - WagVendas',
   },
   {
     path: 'perfil',
     loadComponent: () => import('./features/home/home.page').then((m) => m.HomePage), // TODO: Criar pagina de perfil
-    title: 'Meu Perfil - WagSales',
+    title: 'Meu Perfil - WagVendas',
   },
   {
     path: 'favoritos',
     loadComponent: () => import('./features/wishlist/wishlist.page').then((m) => m.WishlistPage),
-    title: 'Favoritos - WagSales',
+    title: 'Favoritos - WagVendas',
   },
   {
     path: 'checkout',
     loadComponent: () => import('./features/checkout/checkout.page').then((m) => m.CheckoutPage),
-    title: 'Checkout - WagSales',
+    title: 'Checkout - WagVendas',
   },
   {
     path: '**',
     redirectTo: '',
   },
 ];
+
