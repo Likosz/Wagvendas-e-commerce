@@ -38,7 +38,7 @@
         <div class="absolute top-3 left-3 right-3 flex flex-wrap gap-2 z-10">
           @if (product.discount && product.discount > 0) {
             <span
-              class="inline-flex items-center gap-1 px-2.5 py-1 bg-transparent text-amber-400 border border-amber-400 dark:text-amber-300 dark:border-amber-300 text-xs font-bold rounded-full shadow-lg"
+              class="inline-flex items-center gap-1 px-2.5 py-1 bg-white/90 dark:bg-dark-900/70 text-dark-900 border border-dark-900 dark:text-white dark:border-white text-xs font-bold rounded-full shadow-lg"
               aria-label="Desconto de {{ getDiscountPercentage() }} por cento"
             >
               <lucide-icon [img]="icons.TrendingUp" [size]="14"></lucide-icon>
@@ -95,7 +95,17 @@
           "
           [attr.aria-pressed]="isInWishlist()"
         >
-          <lucide-icon [img]="icons.Heart" [size]="20"></lucide-icon>
+          <span class="relative inline-block">
+            <lucide-icon
+              [img]="icons.Heart"
+              [size]="20"
+              class="absolute inset-0 pointer-events-none heart-fill"
+              [class.text-error-500]="isInWishlist()"
+              [class.text-transparent]="!isInWishlist()"
+              aria-hidden="true"
+            ></lucide-icon>
+            <lucide-icon [img]="icons.Heart" [size]="20" aria-hidden="true"></lucide-icon>
+          </span>
         </button>
 
         <!-- Stock Badge (Bottom Right) -->
@@ -151,7 +161,7 @@
                 <lucide-icon
                   [img]="icons.Star"
                   [size]="16"
-                  class="text-warning-500"
+                  class="text-warning-500 star-active"
                   aria-hidden="true"
                 ></lucide-icon>
               } @else if (getStarType(star) === 'half') {
@@ -164,7 +174,7 @@
                   <lucide-icon
                     [img]="icons.Star"
                     [size]="16"
-                    class="text-warning-500 absolute top-0 left-0 overflow-hidden"
+                    class="text-warning-500 absolute top-0 left-0 overflow-hidden star-active"
                     style="clip-path: inset(0 50% 0 0)"
                   ></lucide-icon>
                 </div>

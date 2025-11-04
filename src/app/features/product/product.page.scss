@@ -165,7 +165,6 @@ html {
   scroll-behavior: smooth;
 }
 
-// Product grid animations
 .grid > * {
   animation: fadeIn 0.4s ease-out;
 }
@@ -178,5 +177,44 @@ html {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+// preenchimento da estrela
+::ng-deep .star-fill svg,
+::ng-deep .star-fill svg * {
+  fill: currentColor !important;
+  stroke: none !important;
+}
+
+button[role='radio'] {
+  lucide-icon {
+    transition:
+      color 150ms ease,
+      filter 150ms ease,
+      transform 150ms ease;
+  }
+
+  &:hover lucide-icon,
+  &:focus lucide-icon {
+    ::ng-deep svg {
+      fill: currentColor;
+    }
+  }
+}
+
+// forçar preenchimento nas estrelas
+.text-primary-500 {
+  ::ng-deep svg,
+  ::ng-deep svg * {
+    fill: currentColor !important;
+  }
+}
+
+.star-active {
+  ::ng-deep svg,
+  ::ng-deep svg * {
+    fill: currentColor !important;
+    stroke: currentColor !important;
   }
 }

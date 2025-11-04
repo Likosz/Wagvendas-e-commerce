@@ -176,6 +176,16 @@ lucide-icon {
   }
 }
 
+// Melhora contraste do logo no modo claro
+.logo-img {
+  /* contorno sutil para letras brancas sobre fundo claro */
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.45)) drop-shadow(0 0 1px rgba(0, 0, 0, 0.25));
+}
+
+:host-context(.dark) .logo-img {
+  filter: none;
+}
+
 // Responsividade - Ajustes finos
 @media (max-width: 768px) {
   .container-custom {
