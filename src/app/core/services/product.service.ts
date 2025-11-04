@@ -45,8 +45,15 @@ export class ProductService {
   );
 
   constructor() {
-    // Inicializa dados
     this.loadProducts();
+  }
+
+  public getCurrentPage(): number {
+    return this.currentPage();
+  }
+
+  public getItemsPerPage(): number {
+    return this.itemsPerPage();
   }
 
   public getAllProducts(): Product[] {

@@ -1,5 +1,13 @@
-import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+  PLATFORM_ID,
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   LucideAngularModule,
@@ -30,6 +38,7 @@ export class ProductPage implements OnInit {
   private productService = inject(ProductService);
   private wishlistService = inject(WishlistService);
   private cartService = inject(CartService);
+  private platformId = inject(PLATFORM_ID);
 
   readonly icons = {
     Heart,
@@ -73,7 +82,41 @@ export class ProductPage implements OnInit {
     return prod?.images[index] || prod?.thumbnail || '';
   });
 
-  // Breadcrumbs
+  // Avaliação do usuário
+  public userRating = signal<number>(0);
+  public hoverRating = signal<number>(0);
+
+  private loadUserRating(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const prod = this.product();
+    if (!prod) return;
+    try {
+      const key = `wag:rating:${prod.id}`;
+      const v = localStorage.getItem(key);
+      if (v) this.userRating.set(Math.max(0, Math.min(5, parseInt(v, 10) || 0)));
+    } catch {}
+  }
+
+  private saveUserRating(value: number): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const prod = this.product();
+    if (!prod) return;
+    try {
+      const key = `wag:rating:${prod.id}`;
+      localStorage.setItem(key, String(value));
+    } catch {}
+  }
+
+  private removeUserRating(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const prod = this.product();
+    if (!prod) return;
+    try {
+      const key = `wag:rating:${prod.id}`;
+      localStorage.removeItem(key);
+    } catch {}
+  }
+
   public breadcrumbs = computed(() => {
     const prod = this.product();
     if (!prod) return [];
@@ -114,12 +157,25 @@ export class ProductPage implements OnInit {
     return Math.max(0, stock);
   });
 
+  // Total considerando a quantidade
+  public totalPrice = computed(() => {
+    const qty = this.quantity();
+    const unit = this.finalPrice();
+    return Math.max(0, unit * (qty || 0));
+  });
+
   // Array de estrelas para rating
   public get starArray(): number[] {
     return Array.from({ length: 5 }, (_, i) => i + 1);
   }
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+      } catch {}
+    }
+
     this.route.paramMap.subscribe((params) => {
       const slug = params.get('slug');
       if (!slug) {
@@ -131,6 +187,7 @@ export class ProductPage implements OnInit {
       if (product) {
         this.product.set(product);
         this.loading.set(false);
+        this.loadUserRating();
       } else {
         this.notFound.set(true);
         this.loading.set(false);
@@ -193,7 +250,11 @@ export class ProductPage implements OnInit {
     if (!prod) return;
     if (navigator.share) {
       navigator
-        .share({ title: prod.name, text: prod.shortDescription || prod.description, url: window.location.href })
+        .share({
+          title: prod.name,
+          text: prod.shortDescription || prod.description,
+          url: window.location.href,
+        })
         .catch(() => {});
     } else if (navigator.clipboard) {
       navigator.clipboard.writeText(window.location.href).catch(() => {});
@@ -204,7 +265,7 @@ export class ProductPage implements OnInit {
     this.activeTab.set(tab);
   }
 
-  // Tipo de estrela (cheia, meia, vazia)
+  // Tipo de estrela
   getStarType(index: number): 'full' | 'half' | 'empty' {
     const prod = this.product();
     if (!prod) return 'empty';
@@ -212,6 +273,59 @@ export class ProductPage implements OnInit {
     if (index <= Math.floor(rating)) return 'full';
     if (index === Math.ceil(rating) && rating % 1 !== 0) return 'half';
     return 'empty';
+  }
+
+  get isBrowser(): boolean {
+    return isPlatformBrowser(this.platformId);
+  }
+
+  onStarEnter(value: number): void {
+    this.hoverRating.set(value);
+  }
+
+  onStarLeave(): void {
+    this.hoverRating.set(0);
+  }
+
+  onStarSelect(value: number): void {
+    if (this.userRating() === value) {
+      this.userRating.set(0);
+      this.removeUserRating();
+      return;
+    }
+
+    const v = Math.max(1, Math.min(5, value));
+    this.userRating.set(v);
+    this.saveUserRating(v);
+  }
+
+  onStarKeydown(event: KeyboardEvent, value: number): void {
+    const key = event.key;
+    if (key === 'Enter' || key === ' ') {
+      event.preventDefault();
+      this.onStarSelect(value);
+      return;
+    }
+    if (key === 'ArrowRight' || key === 'ArrowUp') {
+      event.preventDefault();
+      const next = Math.min(5, (this.userRating() || 0) + 1);
+      this.onStarSelect(next);
+      return;
+    }
+    if (key === 'ArrowLeft' || key === 'ArrowDown') {
+      event.preventDefault();
+      const prev = Math.max(1, (this.userRating() || 1) - 1);
+      this.onStarSelect(prev);
+      return;
+    }
+  }
+
+  isUserStarActive(index: number): boolean {
+    if (this.hoverRating() > 0) {
+      return index <= this.hoverRating();
+    }
+
+    return this.userRating() > 0 && index <= this.userRating();
   }
 
   formatPrice(price: number): string {
@@ -240,4 +354,3 @@ export class ProductPage implements OnInit {
     return translations[type] || type;
   }
 }
-
