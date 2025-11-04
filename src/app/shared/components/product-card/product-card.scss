@@ -16,7 +16,7 @@
   0%,
   100% {
     transform: scale(1);
-    filter: drop-shadow(0 0 0 rgba(252, 211, 77, 0)); // amber-300 glow
+    filter: drop-shadow(0 0 0 rgba(252, 211, 77, 0));
   }
   50% {
     transform: scale(1.12);
@@ -29,7 +29,6 @@
   animation: star-twinkle 900ms ease-in-out both;
 }
 
-// Line clamp utilities
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -37,7 +36,6 @@
   overflow: hidden;
 }
 
-// Screen reader only
 .sr-only {
   position: absolute;
   width: 1px;
@@ -50,7 +48,6 @@
   border-width: 0;
 }
 
-// Skeleton Loader
 .product-card-skeleton {
   background: white;
   border-radius: 0.75rem;
@@ -118,7 +115,6 @@
   }
 }
 
-// Skeleton animation
 @keyframes skeleton-loading {
   0% {
     background-position: 200% 0;
@@ -145,12 +141,17 @@ button[aria-pressed='true'] {
   }
 }
 
-// Add to cart button loading state
+.heart-fill svg,
+.heart-fill svg * {
+  fill: currentColor !important;
+  stroke: none !important;
+}
+
+// Add to cart button
 button[disabled] {
   pointer-events: none;
 }
 
-// Spinner animation
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -262,7 +263,6 @@ a:focus-visible {
   }
 }
 
-// Accessibility
 :focus-visible {
   outline: 4px solid #0ea5e9;
   outline-offset: 2px;

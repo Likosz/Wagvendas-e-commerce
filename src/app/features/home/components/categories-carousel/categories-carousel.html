@@ -40,7 +40,7 @@
         <swiper-slide>
           <a
             [routerLink]="['/produtos']"
-            [queryParams]="{ cat: category.slug }"
+            [queryParams]="{ cat: category.id }"
             class="group block relative overflow-hidden rounded-2xl bg-white dark:bg-dark-900 shadow-md hover:shadow-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-primary-500/50"
             [attr.aria-label]="
               'Categoria ' + category.name + ' com ' + category.productCount + ' produtos'

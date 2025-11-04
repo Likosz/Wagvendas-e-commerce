@@ -94,7 +94,7 @@ export class HomePage implements OnInit {
   }
 
   onToggleWishlist(product: Product): void {
-    this.wishlistService.toggleWishlist(product.id);
+    return;
   }
 
   onQuickView(product: Product): void {

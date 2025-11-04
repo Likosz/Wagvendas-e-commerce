@@ -12,6 +12,7 @@ import {
 } from 'lucide-angular';
 import { ProductFilter } from '../../../core/interfaces/product.interface';
 import { ProductService } from '../../../core/services/product.service';
+import { ActivatedRoute } from '@angular/router';
 
 interface FilterOption {
   id: string;
@@ -29,6 +30,7 @@ interface FilterOption {
 })
 export class ProductFilters implements OnInit {
   private productService = inject(ProductService);
+  private route = inject(ActivatedRoute);
 
   @Output() filterChange = new EventEmitter<ProductFilter>();
   @Output() closeDrawer = new EventEmitter<void>();
@@ -58,7 +60,6 @@ export class ProductFilters implements OnInit {
   public tagOptions = signal<FilterOption[]>([]);
   public priceRange = signal<{ min: number; max: number }>({ min: 0, max: 10000 });
 
-  // Computed
   public hasActiveFilters = computed(() => {
     return (
       this.selectedCategories().length > 0 ||
@@ -86,10 +87,17 @@ export class ProductFilters implements OnInit {
 
   ngOnInit(): void {
     this.loadFilterOptions();
+    const cat = this.route.snapshot.queryParamMap.get('cat');
+    if (cat) {
+      this.applyCategoryFromQuery(cat);
+    }
+    this.route.queryParamMap.subscribe((map) => {
+      const c = map.get('cat');
+      if (c) this.applyCategoryFromQuery(c);
+    });
   }
 
   private loadFilterOptions(): void {
-    // Get unique categories
     const categories = [
       { id: '1', label: 'Eletrônicos', count: 8, checked: false },
       { id: '2', label: 'Moda', count: 7, checked: false },
@@ -100,7 +108,6 @@ export class ProductFilters implements OnInit {
     ];
     this.categoryOptions.set(categories);
 
-    // Get unique brands
     const brands = this.productService.getUniqueBrands().map((brand) => ({
       id: brand.toLowerCase(),
       label: brand,
@@ -108,7 +115,6 @@ export class ProductFilters implements OnInit {
     }));
     this.brandOptions.set(brands);
 
-    // Get unique tags (top 10)
     const tags = this.productService
       .getUniqueTags()
       .slice(0, 10)
@@ -119,11 +125,20 @@ export class ProductFilters implements OnInit {
       }));
     this.tagOptions.set(tags);
 
-    // Get price range
     const range = this.productService.getPriceRange();
     this.priceRange.set(range);
     this.minPrice.set(range.min);
     this.maxPrice.set(range.max);
+  }
+
+  // Marca checkbox e emite filtro quando vem da URL
+  private applyCategoryFromQuery(catId: string): void {
+    this.selectedCategories.set([catId]);
+    this.categoryOptions.update((options) =>
+      options.map((opt) => ({ ...opt, checked: opt.id === catId })),
+    );
+
+    this.emitFilterChange();
   }
 
   // Category filter
@@ -233,7 +248,6 @@ export class ProductFilters implements OnInit {
     this.emitFilterChange();
   }
 
-  // Close drawer (mobile)
   onCloseDrawer(): void {
     this.closeDrawer.emit();
   }

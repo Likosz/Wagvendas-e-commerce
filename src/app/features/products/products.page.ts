@@ -75,7 +75,8 @@ export class ProductsPage implements OnInit {
     this.cartService.add(product, 1);
   }
   onToggleWishlist(product: Product): void {
-    this.wishlist.toggleWishlist(product.id);
+    // ProductCard já faz o toggle
+    return;
   }
   onQuickView(product: Product): void {
     this.quickViewProduct.set(product);

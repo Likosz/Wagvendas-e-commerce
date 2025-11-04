@@ -56,7 +56,8 @@ export class OffersPage implements OnInit {
     this.cartService.add(p, 1);
   }
   onToggleWishlist(p: Product): void {
-    this.wishlist.toggleWishlist(p.id);
+    // O componente ProductCard já realiza o toggle
+    return;
   }
   onQuickView(p: Product): void {
     this.quickViewProduct.set(p);
