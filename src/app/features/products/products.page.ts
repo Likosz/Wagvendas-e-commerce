@@ -6,6 +6,7 @@ import { QuickViewModal } from '../../shared/components/quick-view-modal/quick-v
 import { ProductService } from '../../core/services/product.service';
 import { CartService } from '../../core/services/cart.service';
 import { ActivatedRoute } from '@angular/router';
+import { WishlistService } from '../../core/services/wishlist.service';
 import { Product, ProductFilter, ProductSortOption } from '../../core/interfaces/product.interface';
 
 @Component({
@@ -20,6 +21,7 @@ export class ProductsPage implements OnInit {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
   private route = inject(ActivatedRoute);
+  private wishlist = inject(WishlistService);
 
   public isFiltersOpen = signal(false);
   public isLoading = signal(false);
@@ -35,7 +37,7 @@ export class ProductsPage implements OnInit {
     return this.productService.totalProducts();
   }
   public get currentPage() {
-    return this.productService['currentPage']();
+    return this.productService.getCurrentPage();
   }
   public get totalPages() {
     return this.productService.totalPages();
@@ -73,7 +75,7 @@ export class ProductsPage implements OnInit {
     this.cartService.add(product, 1);
   }
   onToggleWishlist(product: Product): void {
-    console.log('Toggle wishlist:', product);
+    this.wishlist.toggleWishlist(product.id);
   }
   onQuickView(product: Product): void {
     this.quickViewProduct.set(product);

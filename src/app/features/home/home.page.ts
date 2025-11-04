@@ -9,11 +9,20 @@ import { QuickViewModal } from '../../shared/components/quick-view-modal/quick-v
 import { ProductService } from '../../core/services/product.service';
 import { CartService } from '../../core/services/cart.service';
 import { Product, ProductFilter, ProductSortOption } from '../../core/interfaces/product.interface';
+import { WishlistService } from '../../core/services/wishlist.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, Hero, CategoriesCarousel, ProductFilters, QuickViewModal, ProductCard],
+  imports: [
+    CommonModule,
+    RouterLink,
+    Hero,
+    CategoriesCarousel,
+    ProductFilters,
+    QuickViewModal,
+    ProductCard,
+  ],
   templateUrl: './home.page.html',
   styleUrl: './home.page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +30,7 @@ import { Product, ProductFilter, ProductSortOption } from '../../core/interfaces
 export class HomePage implements OnInit {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
+  private wishlistService = inject(WishlistService);
 
   public isFiltersOpen = signal<boolean>(false);
   public isLoading = signal<boolean>(false);
@@ -38,7 +48,7 @@ export class HomePage implements OnInit {
   }
 
   public get currentPage() {
-    return this.productService['currentPage']();
+    return this.productService.getCurrentPage();
   }
 
   public get totalPages() {
@@ -84,8 +94,7 @@ export class HomePage implements OnInit {
   }
 
   onToggleWishlist(product: Product): void {
-    console.log('Toggle wishlist:', product);
-    // TODO: Implement wishlist service
+    this.wishlistService.toggleWishlist(product.id);
   }
 
   onQuickView(product: Product): void {

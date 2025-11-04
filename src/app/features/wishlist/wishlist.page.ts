@@ -1,6 +1,7 @@
 import { Component, inject, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { CartService } from '../../core/services/cart.service';
 import { LucideAngularModule, Heart, ShoppingBag, Trash2 } from 'lucide-angular';
 import { WishlistService } from '../../core/services/wishlist.service';
 import { ProductService } from '../../core/services/product.service';
@@ -19,6 +20,7 @@ import { Product } from '../../core/interfaces/product.interface';
 export class WishlistPage {
   private wishlistService = inject(WishlistService);
   private productService = inject(ProductService);
+  private cart = inject(CartService);
 
   readonly icons = {
     Heart,
@@ -50,8 +52,8 @@ export class WishlistPage {
   }
 
   addAllToCart(): void {
-    // TODO: Implementar quando o serviço de carrinho estiver pronto
-    console.log('Adicionar todos ao carrinho:', this.wishlistProducts());
+    const items = this.wishlistProducts();
+    items.forEach((p) => this.cart.add(p, 1));
   }
 
   clearWishlist(): void {
@@ -61,8 +63,7 @@ export class WishlistPage {
   }
 
   onAddToCart(product: Product): void {
-    // TODO: Implementar serviço de carrinho
-    console.log('Adicionar ao carrinho:', product);
+    this.cart.add(product, 1);
   }
 
   onToggleWishlist(product: Product): void {
@@ -74,7 +75,7 @@ export class WishlistPage {
     this.isQuickViewOpen.set(true);
   }
 
-  // Quick View Modal handlers
+  // Quick View Modal
   closeQuickView(): void {
     this.isQuickViewOpen.set(false);
     setTimeout(() => {

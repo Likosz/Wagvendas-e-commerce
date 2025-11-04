@@ -118,21 +118,51 @@
               {{ prod().name }}
             </h1>
 
-            <!-- Rating -->
+            <!-- Avaliação estrelas-->
             <div class="flex items-center gap-3">
-              <div class="flex items-center gap-1">
+              <div
+                class="flex items-center gap-1"
+                role="radiogroup"
+                aria-label="Avaliar este produto"
+                (mouseleave)="onStarLeave()"
+              >
                 @for (star of starArray; track star) {
-                  <lucide-icon
-                    [img]="icons.Star"
-                    [size]="18"
-                    [class.text-warning-500]="getStarType(star) === 'full'"
-                    [class.text-dark-300]="getStarType(star) === 'empty'"
-                    [class.dark:text-dark-600]="getStarType(star) === 'empty'"
-                  ></lucide-icon>
+                  <button
+                    type="button"
+                    class="p-1 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/50"
+                    role="radio"
+                    [attr.aria-checked]="isUserStarActive(star)"
+                    [attr.aria-label]="'Avaliar com ' + star + ' estrelas'"
+                    (mouseenter)="onStarEnter(star)"
+                    (focus)="onStarEnter(star)"
+                    (blur)="onStarLeave()"
+                    (click)="onStarSelect(star)"
+                    (keydown)="onStarKeydown($event, star)"
+                  >
+                    <span class="relative inline-block align-middle" aria-hidden="true">
+                      <lucide-icon
+                        [img]="icons.Star"
+                        [size]="18"
+                        class="absolute inset-0 pointer-events-none star-fill"
+                        [class.text-primary-500]="isUserStarActive(star)"
+                        [class.text-transparent]="!isUserStarActive(star)"
+                      ></lucide-icon>
+
+                      <lucide-icon
+                        [img]="icons.Star"
+                        [size]="18"
+                        [class.text-primary-500]="isUserStarActive(star)"
+                        [class.text-dark-300]="!isUserStarActive(star)"
+                        [class.dark:text-dark-600]="!isUserStarActive(star)"
+                        [class.star-active]="isUserStarActive(star)"
+                      ></lucide-icon>
+                    </span>
+                  </button>
                 }
               </div>
               <span class="text-sm text-dark-600 dark:text-dark-400">
                 {{ prod().rating }} ({{ prod().reviewCount }} avaliações)
+                @if (userRating() > 0) { · Sua avaliação: {{ userRating() }}/5 }
               </span>
             </div>
           </div>
@@ -154,6 +184,12 @@
                 </span>
               }
             </div>
+            <p class="mt-1 text-sm text-dark-700 dark:text-dark-300" aria-live="polite">
+              Total para {{ quantity() }} {{ quantity() === 1 ? 'unidade' : 'unidades' }}:
+              <span class="font-semibold text-dark-900 dark:text-white">
+                {{ formatPrice(totalPrice()) }}
+              </span>
+            </p>
           </div>
 
           <!-- Descrição Curta -->

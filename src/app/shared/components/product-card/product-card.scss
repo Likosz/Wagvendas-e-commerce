@@ -1,17 +1,32 @@
 // Product Card Styles
 .product-card {
-  // Smooth transform for hover
   will-change: transform, box-shadow;
 
-  // Image zoom effect
   img {
     will-change: transform;
   }
 
-  // Elevation on hover
   &:hover {
     transform: translateY(-4px);
   }
+}
+
+// Star rating
+@keyframes star-twinkle {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(252, 211, 77, 0)); // amber-300 glow
+  }
+  50% {
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 6px rgba(252, 211, 77, 0.85));
+  }
+}
+
+.product-card:hover lucide-icon.star-active {
+  will-change: transform, filter;
+  animation: star-twinkle 900ms ease-in-out both;
 }
 
 // Line clamp utilities
@@ -35,7 +50,7 @@
   border-width: 0;
 }
 
-// Skeleton Loader Styles
+// Skeleton Loader
 .product-card-skeleton {
   background: white;
   border-radius: 0.75rem;
@@ -149,14 +164,12 @@ button[disabled] {
   animation: spin 1s linear infinite;
 }
 
-// Focus states for keyboard navigation
 button:focus-visible,
 a:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.5);
 }
 
-// Responsive adjustments
 @media (max-width: 640px) {
   .product-card {
     &:hover {
@@ -164,7 +177,7 @@ a:focus-visible {
     }
   }
 
-  // Adjust badge sizes on mobile
+  // Adjusts on mobile
   .product-card {
     .absolute.top-3 {
       top: 0.5rem;
@@ -182,7 +195,7 @@ a:focus-visible {
     }
   }
 
-  // Adjust quick view button on mobile
+  // Adjust quick view button mobile
   .absolute.inset-0 button {
     font-size: 0.875rem;
     padding: 0.5rem 1rem;
@@ -193,19 +206,16 @@ a:focus-visible {
   }
 }
 
-// Print styles
 @media print {
   .product-card {
     break-inside: avoid;
     page-break-inside: avoid;
 
-    // Hide interactive elements
     button,
     .absolute.inset-0 {
       display: none !important;
     }
 
-    // Remove hover effects
     &:hover {
       transform: none;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -217,7 +227,6 @@ a:focus-visible {
   }
 }
 
-// Reduced motion
 @media (prefers-reduced-motion: reduce) {
   .product-card,
   .product-card img,
@@ -226,6 +235,10 @@ a:focus-visible {
   .absolute.inset-0 button {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+  }
+
+  lucide-icon.star-active {
+    animation: none !important;
   }
 
   .product-card:hover {
@@ -239,7 +252,6 @@ a:focus-visible {
   }
 }
 
-// High contrast mode support
 @media (prefers-contrast: high) {
   .product-card {
     border: 2px solid currentColor;
@@ -250,13 +262,12 @@ a:focus-visible {
   }
 }
 
-// Accessibility - focus visible
+// Accessibility
 :focus-visible {
   outline: 4px solid #0ea5e9;
   outline-offset: 2px;
 }
 
-// Badge visibility improvements
 .absolute.top-3 span {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }

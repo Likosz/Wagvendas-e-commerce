@@ -1,5 +1,13 @@
-import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  OnInit,
+  ChangeDetectionStrategy,
+  PLATFORM_ID,
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { LucideAngularModule, ShoppingCart, Trash2, Plus, Minus } from 'lucide-angular';
 import { CartService } from '../../core/services/cart.service';
@@ -15,6 +23,7 @@ import { CartService } from '../../core/services/cart.service';
 export class CartPage implements OnInit {
   private route = inject(ActivatedRoute);
   private cart = inject(CartService);
+  private platformId = inject(PLATFORM_ID);
 
   readonly icons = { ShoppingCart, Trash2, Plus, Minus };
   public couponInput = signal<string>('');
@@ -77,6 +86,12 @@ export class CartPage implements OnInit {
   }
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        window.scrollTo({ top: 0, behavior: 'auto' });
+      } catch {}
+    }
+
     const qp = this.route.snapshot.queryParamMap;
     const code = qp.get('cupom') || qp.get('coupon') || '';
     if (code) {

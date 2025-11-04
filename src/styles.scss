@@ -338,3 +338,15 @@ html {
     display: none !important;
   }
 }
+
+@layer components {
+  .badge-outline-amber {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 text-amber-400 border border-amber-400 rounded-full dark:text-amber-300 dark:border-amber-300;
+  }
+  .badge-outline-primary {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 text-primary-300 border border-primary-300 rounded-full;
+  }
+  .badge-outline-accent {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 text-accent-300 border border-accent-300 rounded-full;
+  }
+}

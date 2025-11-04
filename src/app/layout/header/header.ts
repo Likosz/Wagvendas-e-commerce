@@ -7,7 +7,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { ThemeService } from '../../core/services/theme.service';
 import { CartService } from '../../core/services/cart.service';
 import { WishlistService } from '../../core/services/wishlist.service';
@@ -33,6 +33,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Header {
+  private router = inject(Router);
   private wishlistService = inject(WishlistService);
   public cart = inject(CartService);
 
@@ -125,17 +126,12 @@ export class Header {
     this.themeService.toggleTheme();
   }
 
-  /**
-   * Handler da busca
-   * TODO: Implementar lógica de busca real
-   */
   public onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
     const searchTerm = input.value;
 
     if (searchTerm.trim()) {
-      console.log('Buscando por:', searchTerm);
-      // TODO: Implementar navegação para página de resultados
+      this.router.navigate(['/produtos'], { queryParams: { q: searchTerm.trim() } });
     }
   }
 
@@ -143,6 +139,3 @@ export class Header {
     event.stopPropagation();
   }
 }
-
-
-
